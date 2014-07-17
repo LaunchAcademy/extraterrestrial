@@ -18,5 +18,5 @@ PLATFORMS
 
 DEPENDENCIES
   extraterrestrial!
-  rake
-  rdoc
+  rake (~> 10.3.2)
+  rdoc (~> 4.1.1)
