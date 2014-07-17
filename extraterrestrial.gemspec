@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.rdoc_options << "--title" << "extraterrestrial" <<
     "--main" << "README.rdoc" << "-ri"
   s.bindir = "bin"
-  s.executables << "extraterrestrial"
+  s.executables << "et"
   s.add_development_dependency("rake")
   s.add_development_dependency("rdoc")
   s.add_runtime_dependency("gli", "2.11.0")
