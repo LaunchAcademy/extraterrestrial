@@ -1,15 +1,14 @@
 require File.join(
   [File.dirname(__FILE__), "lib", "extraterrestrial", "version.rb"])
-
 Gem::Specification.new do |s|
   s.name = "extraterrestrial"
   s.version = Extraterrestrial::VERSION
-  s.author = "Your Name Here"
-  s.email = "your@email.address.com"
-  s.homepage = "http://your.website.com"
+  s.author = "Adam Sheehan"
+  s.email = "adam.sheehan@launchacademy.com"
+  s.homepage = "http://www.launchacademy.com"
   s.platform = Gem::Platform::RUBY
   s.summary = "A description of your project"
-  s.files = `git ls-files`.split("")
+  s.files = `git ls-files`.split("\n")
   s.require_paths << "lib"
   s.has_rdoc = true
   s.extra_rdoc_files = ["README.rdoc", "extraterrestrial.rdoc"]
