@@ -14,7 +14,7 @@ module ET
         and_return(sample_challenges)
 
       stdout, _ = capture_output do
-        Runner.go(["challenges"])
+        expect(Runner.go(["challenges"])).to eq(0)
       end
 
       expect(stdout).to include("Guess the Number")
