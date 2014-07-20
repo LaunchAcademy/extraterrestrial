@@ -21,5 +21,6 @@ DESC
   s.license = "MIT"
   s.add_development_dependency("rake", "~> 10.3")
   s.add_development_dependency("rspec", "~> 3.0.0")
+  s.add_development_dependency("rspec-mocks", "~> 3.0.0")
   s.add_runtime_dependency("gli", "2.11.0")
 end
