@@ -1,5 +1,5 @@
 module OutputCatcher
-  def capture_output(&block)
+  def capture_output
     original_stdout = $stdout
     $stdout = fake_stdout = StringIO.new
     original_stderr = $stderr

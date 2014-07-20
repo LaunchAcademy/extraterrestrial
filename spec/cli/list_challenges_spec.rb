@@ -1,4 +1,4 @@
-module Extraterrestrial
+module ET
   describe "list challenges" do
     let(:sample_challenges) do
       {
@@ -10,9 +10,10 @@ module Extraterrestrial
     end
 
     it "prints the titles and slug" do
-      expect(API).to receive(:list_challenges).and_return(sample_challenges)
+      expect_any_instance_of(API).to receive(:list_challenges).
+        and_return(sample_challenges)
 
-      stdout, stderr = capture_output do
+      stdout, _ = capture_output do
         Runner.go(["challenges"])
       end
 

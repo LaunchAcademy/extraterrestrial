@@ -46,4 +46,9 @@ RSpec.configure do |config|
   end
 
   config.include OutputCatcher
+
+  config.before :each do
+    allow(RestClient).to receive(:get)
+    allow(RestClient).to receive(:post)
+  end
 end

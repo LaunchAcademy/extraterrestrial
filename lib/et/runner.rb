@@ -1,9 +1,10 @@
-module Extraterrestrial
+module ET
   class Runner
-    def self.go(args)
-      data = API.list_challenges
+    def self.go(_args)
+      api = API.new("http://localhost:3000")
+      results = api.list_challenges
 
-      data[:challenges].each do |challenge|
+      results[:challenges].each do |challenge|
         puts challenge[:title]
         puts challenge[:slug]
       end
