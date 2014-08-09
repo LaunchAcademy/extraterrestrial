@@ -3,10 +3,11 @@ require "yaml"
 
 module ET
   class Runner
-    extend GLI::App
-    version VERSION
+    include GLI::App
 
-    def self.go(args, cwd = Dir.pwd)
+    def go(args, cwd = Dir.pwd)
+      version VERSION
+
       desc "Initialize current directory as challenge work area."
       command :init do |c|
         c.flag [:u, :user], desc: "Username"

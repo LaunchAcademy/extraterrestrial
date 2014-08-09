@@ -1,3 +1,5 @@
 #!/usr/bin/env ruby
 require "et"
-exit ET::Runner.go(ARGV)
+
+runner = ET::Runner.new
+exit runner.go(ARGV)
