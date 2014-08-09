@@ -46,6 +46,8 @@ RSpec.configure do |config|
   end
 
   config.include OutputCatcher
+  config.include SampleConfig
+  config.include PathHelper
 
   config.before :each do
     allow(RestClient).to receive(:get)

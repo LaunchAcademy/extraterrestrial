@@ -38,6 +38,23 @@ module ET
         end
       end
 
+      desc "Download challenge to your working area."
+      command :get do |c|
+        c.action do |_global_options, _options, cmdargs|
+          api = API.new("http://localhost:3000")
+
+          cmdargs.each do |slug|
+            challenge = api.get_challenge(slug)
+            archive = api.download_file(challenge[:archive_url])
+
+            challenge_dir = File.join(cwd, slug)
+            system("mkdir #{challenge_dir}")
+            system("tar zxf #{archive} -C #{challenge_dir}")
+            system("rm #{archive}")
+          end
+        end
+      end
+
       run(args)
     end
   end
