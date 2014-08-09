@@ -15,14 +15,10 @@ DESC
 
   s.files = `git ls-files`.split("\n")
   s.require_paths << "lib"
-  s.has_rdoc = true
-  s.extra_rdoc_files = ["README.rdoc", "et.rdoc"]
-  s.rdoc_options << "--title" << "et" <<
-    "--main" << "README.rdoc" << "-ri"
+  s.has_rdoc = false
   s.bindir = "bin"
   s.executables << "et"
   s.license = "MIT"
   s.add_development_dependency("rake", "~> 10.3")
-  s.add_development_dependency("rdoc", "~> 4.1")
   s.add_runtime_dependency("gli", "2.11.0")
 end

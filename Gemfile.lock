@@ -8,10 +8,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     gli (2.11.0)
-    json (1.8.1)
     rake (10.3.2)
-    rdoc (4.1.1)
-      json (~> 1.4)
 
 PLATFORMS
   ruby
@@ -19,4 +16,3 @@ PLATFORMS
 DEPENDENCIES
   et!
   rake (~> 10.3)
-  rdoc (~> 4.1)
