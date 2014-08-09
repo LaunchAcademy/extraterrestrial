@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    extraterrestrial (0.0.1)
+    et (0.0.1)
       gli (= 2.11.0)
 
 GEM
@@ -17,6 +17,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  extraterrestrial!
+  et!
   rake (~> 10.3)
   rdoc (~> 4.1)

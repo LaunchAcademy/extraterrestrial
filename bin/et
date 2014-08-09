@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 require "gli"
-require "extraterrestrial"
+require "et"
 
 include GLI::App
 
 program_desc "Describe your application here"
 
-version Extraterrestrial::VERSION
+version ET::VERSION
 
 exit run(ARGV)

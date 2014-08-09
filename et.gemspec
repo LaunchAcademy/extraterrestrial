@@ -1,8 +1,8 @@
 require File.join(
-  [File.dirname(__FILE__), "lib", "extraterrestrial", "version.rb"])
+  [File.dirname(__FILE__), "lib", "et", "version.rb"])
 Gem::Specification.new do |s|
-  s.name = "extraterrestrial"
-  s.version = Extraterrestrial::VERSION
+  s.name = "et"
+  s.version = ET::VERSION
   s.author = "Adam Sheehan"
   s.email = "adam.sheehan@launchacademy.com"
   s.homepage = "http://www.launchacademy.com"
@@ -16,8 +16,8 @@ DESC
   s.files = `git ls-files`.split("\n")
   s.require_paths << "lib"
   s.has_rdoc = true
-  s.extra_rdoc_files = ["README.rdoc", "extraterrestrial.rdoc"]
-  s.rdoc_options << "--title" << "extraterrestrial" <<
+  s.extra_rdoc_files = ["README.rdoc", "et.rdoc"]
+  s.rdoc_options << "--title" << "et" <<
     "--main" << "README.rdoc" << "-ri"
   s.bindir = "bin"
   s.executables << "et"

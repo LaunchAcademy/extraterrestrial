@@ -1,5 +1,0 @@
-= extraterrestrial
-
-Generate this with
-    extraterrestrial rdoc
-After you have described your command line interface
