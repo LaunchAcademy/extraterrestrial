@@ -15,7 +15,7 @@ describe "list challenges" do
       and_return(sample_challenges)
 
     stdout, _ = capture_output do
-      expect(runner.go(["challenges"])).to eq(0)
+      expect(runner.go(["list"])).to eq(0)
     end
 
     expect(stdout).to include("Guess the Number")

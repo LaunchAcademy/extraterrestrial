@@ -26,7 +26,7 @@ module ET
       end
 
       desc "List available challenges."
-      command :challenges do |c|
+      command :list do |c|
         c.action do |_global_options, _options, _cmdargs|
           api = API.new("http://localhost:3000")
           results = api.list_challenges
