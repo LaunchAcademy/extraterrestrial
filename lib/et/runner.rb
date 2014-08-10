@@ -55,6 +55,14 @@ module ET
         end
       end
 
+      desc "Submit the challenge in this directory."
+      command :submit do |c|
+        c.action do |_global_options, _options, _cmdargs|
+          api = API.new("http://localhost:3000")
+          api.submit_challenge(cwd)
+        end
+      end
+
       run(args)
     end
   end

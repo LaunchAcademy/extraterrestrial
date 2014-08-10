@@ -25,5 +25,8 @@ module ET
     def download_file(url)
       File.join(File.dirname(__FILE__), "../../spec/data/archive.tar.gz")
     end
+
+    def submit_challenge(dir)
+    end
   end
 end
