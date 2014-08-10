@@ -1,4 +1,5 @@
 require "rest-client"
+require "securerandom"
 require "json"
 
 module ET
@@ -15,18 +16,35 @@ module ET
     end
 
     def get_challenge(slug)
-      {
-        title: "Blackjack",
-        slug: "blackjack",
-        archive_url: "http://localhost:3000/some-archive.tar.gz"
-      }
+      response = RestClient.get("http://localhost:3000/challenges/#{slug}.json")
+      body = JSON.parse(response, symbolize_names: true)
+      body[:challenge]
     end
 
     def download_file(url)
-      File.join(File.dirname(__FILE__), "../../spec/data/archive.tar.gz")
+      uri = URI(url)
+      dest = random_filename
+
+      Net::HTTP.start(uri.host, uri.port,
+        use_ssl: uri.scheme == "https") do |http|
+
+        resp = http.get(uri.path)
+
+        open(dest, 'wb') do |file|
+          file.write(resp.body)
+        end
+      end
+
+      dest
     end
 
     def submit_challenge(dir)
+    end
+
+    private
+
+    def random_filename
+      File.join(Dir.mktmpdir, SecureRandom.hex)
     end
   end
 end

@@ -47,9 +47,7 @@ module ET
             challenge = api.get_challenge(slug)
             archive = api.download_file(challenge[:archive_url])
 
-            challenge_dir = File.join(cwd, slug)
-            system("mkdir #{challenge_dir}")
-            system("tar zxf #{archive} -C #{challenge_dir}")
+            system("tar zxf #{archive} -C #{cwd}")
             system("rm #{archive}")
           end
         end
