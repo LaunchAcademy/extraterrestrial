@@ -3,15 +3,31 @@ PATH
   specs:
     et (0.0.1)
       gli (= 2.11.0)
+      rest-client (~> 1.7.2)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    diff-lcs (1.2.5)
     gli (2.11.0)
-    json (1.8.1)
+    mime-types (2.3)
+    netrc (0.7.7)
     rake (10.3.2)
-    rdoc (4.1.1)
-      json (~> 1.4)
+    rest-client (1.7.2)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    rspec (3.0.0)
+      rspec-core (~> 3.0.0)
+      rspec-expectations (~> 3.0.0)
+      rspec-mocks (~> 3.0.0)
+    rspec-core (3.0.2)
+      rspec-support (~> 3.0.0)
+    rspec-expectations (3.0.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.0.0)
+    rspec-mocks (3.0.2)
+      rspec-support (~> 3.0.0)
+    rspec-support (3.0.2)
 
 PLATFORMS
   ruby
@@ -19,4 +35,5 @@ PLATFORMS
 DEPENDENCIES
   et!
   rake (~> 10.3)
-  rdoc (~> 4.1)
+  rspec (~> 3.0.0)
+  rspec-mocks (~> 3.0.0)

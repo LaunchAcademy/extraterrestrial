@@ -1,11 +1,5 @@
 #!/usr/bin/env ruby
-require "gli"
 require "et"
 
-include GLI::App
-
-program_desc "Describe your application here"
-
-version ET::VERSION
-
-exit run(ARGV)
+runner = ET::Runner.new
+exit runner.go(ARGV)

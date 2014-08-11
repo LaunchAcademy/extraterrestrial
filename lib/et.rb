@@ -1,4 +1,3 @@
-require "et/version.rb"
-
-# Add requires for other files you add to your project here, so
-# you just need to require this one file in your bin file
+require "et/version"
+require "et/runner"
+require "et/api"

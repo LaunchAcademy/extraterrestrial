@@ -1,2 +1,5 @@
 # Don't include output from gem builds.
 /*.gem
+
+# Exclude a test-area for downloading/submitting challenges.
+/sample
