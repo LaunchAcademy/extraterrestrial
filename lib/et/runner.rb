@@ -34,12 +34,7 @@ module ET
       desc "List available challenges."
       command :list do |c|
         c.action do |_global_options, _options, _cmdargs|
-          results = api.list_challenges
-
-          results[:challenges].each do |challenge|
-            puts challenge[:title]
-            puts challenge[:slug]
-          end
+          Formatter.print_table(api.list_challenges[:challenges], :slug, :title)
         end
       end
 
