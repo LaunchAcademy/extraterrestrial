@@ -34,7 +34,6 @@ module ET
       desc "List available challenges."
       command :list do |c|
         c.action do |_global_options, _options, _cmdargs|
-          api = API.new(host)
           results = api.list_challenges
 
           results[:challenges].each do |challenge|
@@ -47,8 +46,6 @@ module ET
       desc "Download challenge to your working area."
       command :get do |c|
         c.action do |_global_options, _options, cmdargs|
-          api = API.new(host)
-
           cmdargs.each do |slug|
             challenge = api.get_challenge(slug)
             archive = api.download_file(challenge[:archive_url])
@@ -62,12 +59,15 @@ module ET
       desc "Submit the challenge in this directory."
       command :submit do |c|
         c.action do |_global_options, _options, _cmdargs|
-          api = API.new(host)
           api.submit_challenge(cwd)
         end
       end
 
       run(args)
+    end
+
+    def api
+      @api ||= API.new(host)
     end
 
     def host
