@@ -75,7 +75,18 @@ module ET
     end
 
     def config
-      @config ||= Config.new(cwd)
+      @config ||= load_config
+    end
+
+    private
+
+    def load_config
+      c = Config.new(cwd)
+      if c.path.nil?
+        raise StandardError.new("Could not find configuration file. " +
+          "Run `et init` to create one.")
+      end
+      c
     end
   end
 end
