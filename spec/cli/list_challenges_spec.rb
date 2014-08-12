@@ -1,6 +1,4 @@
 describe "list challenges" do
-  let(:runner) { ET::Runner.new }
-
   let(:sample_challenges) do
     {
       challenges: [
@@ -14,14 +12,19 @@ describe "list challenges" do
     expect_any_instance_of(ET::API).to receive(:list_challenges).
       and_return(sample_challenges)
 
-    stdout, _ = capture_output do
-      expect(runner.go(["list"])).to eq(0)
+    Dir.mktmpdir("test") do |tmpdir|
+      write_sample_config_to(tmpdir)
+
+      runner = ET::Runner.new(tmpdir)
+      stdout, _ = capture_output do
+        expect(runner.go(["list"])).to eq(0)
+      end
+
+      expect(stdout).to include("Guess the Number")
+      expect(stdout).to include("guess-the-number")
+
+      expect(stdout).to include("Blackjack")
+      expect(stdout).to include("blackjack")
     end
-
-    expect(stdout).to include("Guess the Number")
-    expect(stdout).to include("guess-the-number")
-
-    expect(stdout).to include("Blackjack")
-    expect(stdout).to include("blackjack")
   end
 end

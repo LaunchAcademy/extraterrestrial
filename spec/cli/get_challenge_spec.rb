@@ -1,6 +1,4 @@
 describe "get challenge" do
-  let(:runner) { ET::Runner.new }
-
   let(:challenge_info) do
     {
       title: "Some Challenge",
@@ -29,8 +27,9 @@ describe "get challenge" do
       Dir.mktmpdir("test") do |tmpdir|
         write_sample_config_to(tmpdir)
 
+        runner = ET::Runner.new(tmpdir)
          _, _ = capture_output do
-          expect(runner.go(["get", "some-challenge"], tmpdir)).to eq(0)
+          expect(runner.go(["get", "some-challenge"])).to eq(0)
         end
 
         ["some-challenge/README.md", "some-challenge/sample.rb"].each do |filename|

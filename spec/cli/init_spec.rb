@@ -1,8 +1,6 @@
 require "json"
 
 describe "init" do
-  let(:runner) { ET::Runner.new }
-
   it "writes the user credentials to a config file" do
     Dir.mktmpdir("test") do |tmpdir|
       arguments = [
@@ -12,8 +10,9 @@ describe "init" do
         "-h", "http://localhost:3000"
       ]
 
+      runner = ET::Runner.new(tmpdir)
       _, _ = capture_output do
-        expect(runner.go(arguments, tmpdir)).to eq(0)
+        expect(runner.go(arguments)).to eq(0)
       end
 
       filepath = File.join(tmpdir, ".et")
