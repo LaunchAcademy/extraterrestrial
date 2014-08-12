@@ -10,7 +10,15 @@ module ET
       @path ||= find_config_file(current_dir)
     end
 
+    def host
+      options["host"]
+    end
+
     private
+
+    def options
+      @options ||= YAML.load(File.read(path))
+    end
 
     def find_config_file(dir)
       config_path = File.join(dir, ".et")

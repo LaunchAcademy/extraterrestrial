@@ -26,4 +26,15 @@ describe ET::Config do
       expect(config.path).to eq(nil)
     end
   end
+
+  describe "#host" do
+    it "reads the host from the config" do
+      Dir.mktmpdir("test") do |tmpdir|
+        write_sample_config_to(tmpdir, "host" => "http://example.com")
+
+        config = ET::Config.new(tmpdir)
+        expect(config.host).to eq("http://example.com")
+      end
+    end
+  end
 end
