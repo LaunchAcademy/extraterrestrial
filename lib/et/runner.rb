@@ -21,13 +21,14 @@ module ET
         c.flag [:h, :host], desc: "Server hosting the challenges"
 
         c.action do |_global_options, options, _cmdargs|
-          config = {
+          settings = {
             "username" => options[:user],
             "token" => options[:token],
             "host" => options[:host]
           }
 
-          File.write(File.join(cwd, ".et"), config.to_yaml)
+          settings = prompt_for_missing(settings)
+          File.write(File.join(cwd, ".et"), settings.to_yaml)
         end
       end
 
@@ -74,6 +75,18 @@ module ET
     end
 
     private
+
+    def prompt_for_missing(settings)
+      settings.each do |key, value|
+        if value.nil?
+          print "#{key.capitalize}: "
+          input = gets.chomp
+          settings[key] = input
+        end
+      end
+
+      settings
+    end
 
     def load_config
       c = Config.new(cwd)
