@@ -1,6 +1,4 @@
 describe "submit challenge" do
-  let(:runner) { ET::Runner.new }
-
   let(:sample_archive_path) do
     project_root.join("spec/data/archive.tar.gz")
   end
@@ -15,8 +13,9 @@ describe "submit challenge" do
           with(challenge_dir).
           and_return(true)
 
+        runner = ET::Runner.new(challenge_dir)
          _, _ = capture_output do
-          expect(runner.go(["submit"], challenge_dir)).to eq(0)
+          expect(runner.go(["submit"])).to eq(0)
         end
       end
     end

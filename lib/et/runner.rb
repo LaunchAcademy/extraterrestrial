@@ -5,7 +5,13 @@ module ET
   class Runner
     include GLI::App
 
-    def go(args, cwd = Dir.pwd)
+    attr_reader :cwd
+
+    def initialize(cwd = Dir.pwd)
+      @cwd = cwd
+    end
+
+    def go(args)
       version VERSION
 
       desc "Initialize current directory as challenge work area."
@@ -28,7 +34,7 @@ module ET
       desc "List available challenges."
       command :list do |c|
         c.action do |_global_options, _options, _cmdargs|
-          api = API.new("http://localhost:3000")
+          api = API.new(host)
           results = api.list_challenges
 
           results[:challenges].each do |challenge|
@@ -41,7 +47,7 @@ module ET
       desc "Download challenge to your working area."
       command :get do |c|
         c.action do |_global_options, _options, cmdargs|
-          api = API.new("http://localhost:3000")
+          api = API.new(host)
 
           cmdargs.each do |slug|
             challenge = api.get_challenge(slug)
@@ -56,12 +62,20 @@ module ET
       desc "Submit the challenge in this directory."
       command :submit do |c|
         c.action do |_global_options, _options, _cmdargs|
-          api = API.new("http://localhost:3000")
+          api = API.new(host)
           api.submit_challenge(cwd)
         end
       end
 
       run(args)
+    end
+
+    def host
+      config.host
+    end
+
+    def config
+      @config ||= Config.new(cwd)
     end
   end
 end
