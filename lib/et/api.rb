@@ -14,12 +14,12 @@ module ET
     end
 
     def list_challenges
-      response = RestClient.get("http://localhost:3000/challenges.json")
+      response = RestClient.get(challenges_url)
       JSON.parse(response, symbolize_names: true)
     end
 
     def get_challenge(slug)
-      response = RestClient.get("http://localhost:3000/challenges/#{slug}.json")
+      response = RestClient.get(challenge_url(slug))
       body = JSON.parse(response, symbolize_names: true)
       body[:challenge]
     end
@@ -42,9 +42,31 @@ module ET
     end
 
     def submit_challenge(dir)
+      Dir.mktmpdir do |tmpdir|
+        slug = File.basename(dir)
+
+        submission_file = File.join(tmpdir, "submission.tar.gz")
+        if system("tar zcf #{submission_file} -C #{dir} .")
+          RestClient.post(submission_url(slug),
+            { submission: { archive: File.new(submission_file) }},
+            { "Authorization" => auth_header })
+        end
+      end
     end
 
     private
+
+    def challenge_url(slug)
+      URI.join(host, "challenges/#{slug}.json").to_s
+    end
+
+    def challenges_url
+      URI.join(host, "challenges.json").to_s
+    end
+
+    def submission_url(slug)
+      URI.join(host, "challenges/#{slug}/submissions.json").to_s
+    end
 
     def random_filename
       File.join(Dir.mktmpdir, SecureRandom.hex)
