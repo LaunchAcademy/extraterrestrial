@@ -14,7 +14,10 @@ module ET
     def go(args)
       version VERSION
 
+      pre { |_, _, _, _| check_config! }
+
       desc "Initialize current directory as challenge work area."
+      skips_pre
       command :init do |c|
         c.flag [:u, :user], desc: "Username"
         c.flag [:t, :token], desc: "Login token"
@@ -28,7 +31,7 @@ module ET
           }
 
           settings = prompt_for_missing(settings)
-          File.write(File.join(cwd, ".et"), settings.to_yaml)
+          save_config(settings)
         end
       end
 
@@ -63,15 +66,27 @@ module ET
     end
 
     def api
-      @api ||= API.new(host)
+      @api ||= API.new(host, username, token)
     end
 
     def host
       config.host
     end
 
+    def username
+      config.username
+    end
+
+    def token
+      config.token
+    end
+
+    def setting(key)
+      config.exists? && config[key]
+    end
+
     def config
-      @config ||= load_config
+      @config ||= Config.new(cwd)
     end
 
     private
@@ -79,22 +94,42 @@ module ET
     def prompt_for_missing(settings)
       settings.each do |key, value|
         if value.nil?
-          print "#{key.capitalize}: "
+          existing_value = setting(key)
+
+          if existing_value
+            print "#{key.capitalize} (#{existing_value}): "
+          else
+            print "#{key.capitalize}: "
+          end
+
           input = gets.chomp
-          settings[key] = input
+
+          if input && !input.empty?
+            settings[key] = input
+          else
+            settings[key] = existing_value
+          end
         end
       end
 
       settings
     end
 
-    def load_config
-      c = Config.new(cwd)
-      if c.path.nil?
+    def check_config!
+      if config.exists?
+        true
+      else
         raise StandardError.new("Could not find configuration file. " +
           "Run `et init` to create one.")
       end
-      c
+    end
+
+    def save_config(settings)
+      if config.exists?
+        config.update(settings)
+      else
+        File.write(File.join(cwd, ".et"), settings.to_yaml)
+      end
     end
   end
 end
