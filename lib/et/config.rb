@@ -11,7 +11,11 @@ module ET
     end
 
     def host
-      options["host"]
+      if options["host"].start_with?("http")
+        options["host"]
+      else
+        "http://" + options["host"]
+      end
     end
 
     def username
