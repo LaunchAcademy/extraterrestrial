@@ -14,6 +14,27 @@ module ET
       options["host"]
     end
 
+    def username
+      options["username"]
+    end
+
+    def token
+      options["token"]
+    end
+
+    def exists?
+      !path.nil?
+    end
+
+    def [](key)
+      options[key]
+    end
+
+    def update(options)
+      @options = options
+      File.write(path, options.to_yaml)
+    end
+
     private
 
     def options

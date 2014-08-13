@@ -1,5 +1,5 @@
 describe ET::API do
-  let(:api) { ET::API.new("http://localhost:3000") }
+  let(:api) { ET::API.new(host: "http://localhost:3000") }
 
   describe "challenges" do
     let(:challenges_response) do
