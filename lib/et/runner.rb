@@ -66,7 +66,7 @@ module ET
     end
 
     def api
-      @api ||= API.new(host, username, token)
+      @api ||= API.new(host: host, username: username, token: token)
     end
 
     def host

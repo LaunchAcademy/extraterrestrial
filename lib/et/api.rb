@@ -1,13 +1,16 @@
 require "rest-client"
 require "securerandom"
+require "base64"
 require "json"
 
 module ET
   class API
-    attr_reader :host
+    attr_reader :host, :username, :token
 
-    def initialize(host)
-      @host = host
+    def initialize(options)
+      @host = options[:host]
+      @username = options[:username]
+      @token = options[:token]
     end
 
     def list_challenges
@@ -45,6 +48,14 @@ module ET
 
     def random_filename
       File.join(Dir.mktmpdir, SecureRandom.hex)
+    end
+
+    def credentials
+      Base64.strict_encode64("#{username}:#{token}")
+    end
+
+    def auth_header
+      "Basic #{credentials}"
     end
   end
 end
