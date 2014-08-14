@@ -32,6 +32,8 @@ module ET
 
           settings = prompt_for_missing(settings)
           save_config(settings)
+
+          puts "Saved configuration to #{config.path}"
         end
       end
 
@@ -49,8 +51,13 @@ module ET
             challenge = api.get_challenge(slug)
             archive = api.download_file(challenge[:archive_url])
 
-            system("tar zxf #{archive} -C #{cwd}")
-            system("rm #{archive}")
+            if system("tar zxf #{archive} -C #{cwd}")
+              system("rm #{archive}")
+              challenge_dir = File.join(cwd, slug)
+              puts "Extracted challenge to #{challenge_dir}"
+            else
+              raise StandardError.new("Failed to extract the challenge archive.")
+            end
           end
         end
       end
@@ -59,7 +66,13 @@ module ET
       command :submit do |c|
         c.action do |_global_options, _options, _cmdargs|
           challenge = Challenge.new(cwd)
-          api.submit_challenge(challenge)
+
+          if challenge.exists?
+            api.submit_challenge(challenge)
+            puts "Challenge submitted"
+          else
+            raise StandardError.new("Not in a challenge directory.")
+          end
         end
       end
 
