@@ -58,7 +58,8 @@ module ET
       desc "Submit the challenge in this directory."
       command :submit do |c|
         c.action do |_global_options, _options, _cmdargs|
-          api.submit_challenge(cwd)
+          challenge = Challenge.new(cwd)
+          api.submit_challenge(challenge)
         end
       end
 

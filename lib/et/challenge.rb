@@ -32,6 +32,10 @@ module ET
       @dir ||= find_challenge_dir(cwd)
     end
 
+    def slug
+      File.basename(dir)
+    end
+
     def exists?
       !dir.nil?
     end
