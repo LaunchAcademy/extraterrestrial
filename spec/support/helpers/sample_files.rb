@@ -17,12 +17,14 @@ module SampleFiles
   end
 
   def write_sample_challenge_to(working_dir, slug)
-    challenge_dir = File.join(working_dir, slug)
-    system("mkdir #{challenge_dir}")
+    options = { "title" => slug.capitalize, "slug" => slug }
 
-    readme_path = File.join(challenge_dir, "README.md")
-    File.write(readme_path, "# README")
+    dir = File.join(working_dir, slug)
+    system("mkdir #{dir}")
 
-    challenge_dir
+    File.write(File.join(dir, "README.md"), "# README")
+    File.write(File.join(dir, ".challenge"), options.to_yaml)
+
+    dir
   end
 end

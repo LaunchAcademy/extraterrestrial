@@ -10,7 +10,6 @@ describe "submit challenge" do
         challenge_dir = write_sample_challenge_to(tmpdir, "some-challenge")
 
         expect_any_instance_of(ET::API).to receive(:submit_challenge).
-          with(challenge_dir).
           and_return(true)
 
         runner = ET::Runner.new(challenge_dir)
