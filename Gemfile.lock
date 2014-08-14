@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    et (0.0.1)
+    et (0.1.0)
       gli (= 2.11.0)
-      rest-client (~> 1.7.2)
+      rest-client (~> 1.7)
 
 GEM
   remote: https://rubygems.org/
@@ -34,6 +34,6 @@ PLATFORMS
 
 DEPENDENCIES
   et!
-  rake (~> 10.3)
-  rspec (~> 3.0.0)
-  rspec-mocks (~> 3.0.0)
+  rake (~> 10)
+  rspec (~> 3.0)
+  rspec-mocks (~> 3.0)

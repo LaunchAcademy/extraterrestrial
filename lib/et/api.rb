@@ -41,17 +41,11 @@ module ET
       dest
     end
 
-    def submit_challenge(dir)
-      Dir.mktmpdir do |tmpdir|
-        slug = File.basename(dir)
-
-        submission_file = File.join(tmpdir, "submission.tar.gz")
-        if system("tar zcf #{submission_file} -C #{dir} .")
-          RestClient.post(submission_url(slug),
-            { submission: { archive: File.new(submission_file) }},
-            { "Authorization" => auth_header })
-        end
-      end
+    def submit_challenge(challenge)
+      submission_file = challenge.archive!
+      RestClient.post(submission_url(challenge.slug),
+        { submission: { archive: File.new(submission_file) }},
+        { "Authorization" => auth_header })
     end
 
     private
