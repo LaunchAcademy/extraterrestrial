@@ -12,11 +12,13 @@ module ET
       if exists?
         filepath = random_archive_path
 
-        cmd = "tar zcf #{filepath} -C #{dir} . --exclude='.challenge'"
+        cmd = "tar zcf #{filepath} -C #{dir}"
 
         ignored_files.each do |file|
           cmd += " --exclude='#{file}'"
         end
+
+        cmd += " ."
 
         if system(cmd)
           filepath
@@ -41,7 +43,7 @@ module ET
     end
 
     def ignored_files
-      config["ignore"] || []
+      (config["ignore"] || []) + [".challenge"]
     end
 
     private
