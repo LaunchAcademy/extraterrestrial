@@ -1,3 +1,5 @@
+require "pathname"
+
 module ET
   class Config
     attr_reader :current_dir
@@ -50,7 +52,7 @@ module ET
 
       if File.exists?(config_path)
         config_path
-      elsif dir == "/" || dir == "."
+      elsif dir == "." || Pathname.new(dir).root?
         nil
       else
         find_config_file(File.dirname(dir))
