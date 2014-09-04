@@ -1,3 +1,4 @@
+require "pathname"
 require "securerandom"
 
 module ET
@@ -61,7 +62,7 @@ module ET
 
       if File.exists?(path)
         current_dir
-      elsif current_dir == "/" || current_dir == "."
+      elsif current_dir == "." || Pathname.new(current_dir).root?
         nil
       else
         find_challenge_dir(File.dirname(current_dir))
