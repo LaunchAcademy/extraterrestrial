@@ -1,11 +1,6 @@
 describe "list challenges" do
   let(:sample_challenges) do
-    {
-      challenges: [
-        { title: "Guess the Number", slug: "guess-the-number" },
-        { title: "Blackjack", slug: "blackjack" }
-      ]
-    }
+    JSON.parse(File.read("spec/data/challenges.json"), symbolize_names: true)[:lessons]
   end
 
   it "prints the titles and slug" do
@@ -23,8 +18,8 @@ describe "list challenges" do
       expect(stdout).to include("Guess the Number")
       expect(stdout).to include("guess-the-number")
 
-      expect(stdout).to include("Blackjack")
-      expect(stdout).to include("blackjack")
+      expect(stdout).to include("Auto-Guesser")
+      expect(stdout).to include("auto-guesser")
     end
   end
 end
