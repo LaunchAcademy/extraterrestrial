@@ -4,7 +4,6 @@ describe ET::Challenge do
   let(:challenge_info) do
     {
       "title" => "Guess the Number",
-      "slug" => "guess-the-number",
       "ignore" => ["README.md"]
     }
   end
@@ -12,7 +11,7 @@ describe ET::Challenge do
   describe "#dir" do
     it "selects the directory containing the challenge file" do
       Dir.mktmpdir do |challenge_dir|
-        challenge_path = File.join(challenge_dir, ".challenge")
+        challenge_path = File.join(challenge_dir, ".lesson.yml")
         File.write(challenge_path, challenge_info.to_yaml)
 
         challenge = ET::Challenge.new(challenge_dir)
@@ -22,7 +21,7 @@ describe ET::Challenge do
 
     it "checks parent directories for the challenge file" do
       Dir.mktmpdir do |parent_dir|
-        challenge_path = File.join(parent_dir, ".challenge")
+        challenge_path = File.join(parent_dir, ".lesson.yml")
         File.write(challenge_path, challenge_info.to_yaml)
 
         child_dir = File.join(parent_dir, "foobar")
@@ -44,7 +43,7 @@ describe ET::Challenge do
 
       begin
         Dir.mktmpdir do |challenge_dir|
-          challenge_path = File.join(challenge_dir, ".challenge")
+          challenge_path = File.join(challenge_dir, ".lesson.yml")
           File.write(challenge_path, challenge_info.to_yaml)
 
           file_path = File.join(challenge_dir, "file.rb")
@@ -68,7 +67,7 @@ describe ET::Challenge do
 
       begin
         Dir.mktmpdir do |dir|
-          File.write(File.join(dir, ".challenge"), challenge_info.to_yaml)
+          File.write(File.join(dir, ".lesson.yml"), challenge_info.to_yaml)
           File.write(File.join(dir, "file.rb"), "2 + 2 == 5")
           File.write(File.join(dir, "README.md"), "Ignore me!")
 
@@ -79,7 +78,7 @@ describe ET::Challenge do
 
           expect(files).to include("./file.rb")
           expect(files).to_not include("./README.md")
-          expect(files).to_not include("./.challenge")
+          expect(files).to_not include("./.lesson.yml")
         end
       ensure
         if archive_path && File.exist?(archive_path)

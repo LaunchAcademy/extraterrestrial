@@ -15,13 +15,13 @@ module ET
 
     def list_challenges
       response = RestClient.get(challenges_url)
-      JSON.parse(response, symbolize_names: true)
+      JSON.parse(response, symbolize_names: true)[:lessons]
     end
 
     def get_challenge(slug)
       response = RestClient.get(challenge_url(slug))
       body = JSON.parse(response, symbolize_names: true)
-      body[:challenge]
+      body[:lesson]
     end
 
     def download_file(url)
@@ -51,15 +51,15 @@ module ET
     private
 
     def challenge_url(slug)
-      URI.join(host, "challenges/#{slug}.json").to_s
+      URI.join(host, "lessons/#{slug}.json").to_s
     end
 
     def challenges_url
-      URI.join(host, "challenges.json").to_s
+      URI.join(host, "lessons.json?type=challenge").to_s
     end
 
     def submission_url(slug)
-      URI.join(host, "challenges/#{slug}/submissions.json").to_s
+      URI.join(host, "lessons/#{slug}/submissions.json").to_s
     end
 
     def random_filename
