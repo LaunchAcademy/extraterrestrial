@@ -23,7 +23,7 @@ module SampleFiles
     system("mkdir #{dir}")
 
     File.write(File.join(dir, "README.md"), "# README")
-    File.write(File.join(dir, ".challenge"), options.to_yaml)
+    File.write(File.join(dir, ".lesson.yml"), options.to_yaml)
 
     dir
   end

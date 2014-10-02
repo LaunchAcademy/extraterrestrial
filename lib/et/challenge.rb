@@ -44,13 +44,13 @@ module ET
     end
 
     def ignored_files
-      (config["ignore"] || []) + [".challenge"]
+      (config["ignore"] || []) + [".lesson.yml"]
     end
 
     private
 
     def config
-      @config ||= YAML.load(File.read(File.join(dir, ".challenge")))
+      @config ||= YAML.load(File.read(File.join(dir, ".lesson.yml")))
     end
 
     def random_archive_path
@@ -58,7 +58,7 @@ module ET
     end
 
     def find_challenge_dir(current_dir)
-      path = File.join(current_dir, ".challenge")
+      path = File.join(current_dir, ".lesson.yml")
 
       if File.exists?(path)
         current_dir
