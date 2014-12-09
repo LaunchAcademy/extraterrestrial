@@ -76,6 +76,19 @@ module ET
         end
       end
 
+      desc "Run an exercise test suite."
+      command :test do |c|
+        c.action do |_global_options, _options, _cmdargs|
+          exercise = Exercise.new(cwd)
+
+          if exercise.exists?
+            exercise.run_tests
+          else
+            raise StandardError.new("Not in an exercise directory.")
+          end
+        end
+      end
+
       run(args)
     end
 
