@@ -31,7 +31,7 @@ module ET
           }
 
           settings = prompt_for_missing(settings)
-          save_config(settings)
+          config.save!(settings)
 
           puts "Saved configuration to #{config.path}"
         end
@@ -135,14 +135,6 @@ module ET
       else
         raise StandardError.new("Could not find configuration file. " +
           "Run `et init` to create one.")
-      end
-    end
-
-    def save_config(settings)
-      if config.exists?
-        config.update(settings)
-      else
-        File.write(File.join(cwd, ".et"), settings.to_yaml)
       end
     end
   end
