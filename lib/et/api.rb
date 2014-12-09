@@ -55,7 +55,7 @@ module ET
     end
 
     def challenges_url
-      URI.join(host, "lessons.json?type=challenge").to_s
+      URI.join(host, "lessons.json?submittable=1").to_s
     end
 
     def submission_url(slug)

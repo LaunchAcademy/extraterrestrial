@@ -8,7 +8,7 @@ describe ET::API do
 
     it "queries for a list of challenges" do
       expect(RestClient).to receive(:get).
-        with("http://localhost:3000/lessons.json?type=challenge").
+        with("http://localhost:3000/lessons.json?submittable=1").
         and_return(challenges_response)
 
       results = api.list_challenges
