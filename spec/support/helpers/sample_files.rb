@@ -25,16 +25,4 @@ module SampleFiles
     system("cp", "-r", project_root.join("spec/data/sample-challenge").to_s, dir)
     File.join(dir, "sample-challenge")
   end
-
-  def write_sample_challenge_to(working_dir, slug)
-    options = { "title" => slug.capitalize, "slug" => slug }
-
-    dir = File.join(working_dir, slug)
-    system("mkdir #{dir}")
-
-    File.write(File.join(dir, "README.md"), "# README")
-    File.write(File.join(dir, ".lesson.yml"), options.to_yaml)
-
-    dir
-  end
 end

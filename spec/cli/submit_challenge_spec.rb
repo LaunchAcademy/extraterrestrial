@@ -7,7 +7,7 @@ describe "submit challenge" do
     it "packages and uploads directory" do
       Dir.mktmpdir("test") do |tmpdir|
         write_sample_config_to(tmpdir)
-        challenge_dir = write_sample_challenge_to(tmpdir, "some-challenge")
+        challenge_dir = add_sample_challenge(tmpdir)
 
         expect_any_instance_of(ET::API).to receive(:submit_challenge).
           and_return(true)
