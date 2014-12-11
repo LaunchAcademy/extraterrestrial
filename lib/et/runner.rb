@@ -65,13 +65,13 @@ module ET
       desc "Submit the lesson in this directory."
       command :submit do |c|
         c.action do |_global_options, _options, _cmdargs|
-          challenge = Challenge.new(cwd)
+          lesson = Lesson.new(cwd)
 
-          if challenge.exists?
-            api.submit_lesson(challenge)
-            puts "Challenge submitted"
+          if lesson.exists?
+            api.submit_lesson(lesson)
+            puts "Lesson submitted"
           else
-            raise StandardError.new("Not in a challenge directory.")
+            raise StandardError.new("Not in a lesson directory.")
           end
         end
       end
