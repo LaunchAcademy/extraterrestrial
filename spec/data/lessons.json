@@ -1,0 +1,19 @@
+{
+    "lessons": [
+        {
+            "slug": "max-number",
+            "title": "Max Number",
+            "type": "exercise"
+        },
+        {
+            "slug": "guess-the-number",
+            "title": "Guess the Number",
+            "type": "challenge"
+        },
+        {
+            "slug": "optimal-guesser",
+            "title": "Optimal Guesser",
+            "type": "challenge"
+        }
+    ]
+}

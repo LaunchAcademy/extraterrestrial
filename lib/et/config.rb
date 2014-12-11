@@ -1,3 +1,4 @@
+require "yaml"
 require "pathname"
 
 module ET
@@ -36,9 +37,12 @@ module ET
       options[key]
     end
 
-    def update(options)
-      @options = options
-      File.write(path, options.to_yaml)
+    def save!(options)
+      if exists?
+        File.write(path, options.to_yaml)
+      else
+        File.write(File.join(current_dir, ".et"), options.to_yaml)
+      end
     end
 
     private

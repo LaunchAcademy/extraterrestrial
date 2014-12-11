@@ -13,13 +13,13 @@ module ET
       @token = options[:token]
     end
 
-    def list_challenges
-      response = RestClient.get(challenges_url)
+    def list_lessons
+      response = RestClient.get(lessons_url)
       JSON.parse(response, symbolize_names: true)[:lessons]
     end
 
-    def get_challenge(slug)
-      response = RestClient.get(challenge_url(slug))
+    def get_lesson(slug)
+      response = RestClient.get(lesson_url(slug))
       body = JSON.parse(response, symbolize_names: true)
       body[:lesson]
     end
@@ -41,21 +41,21 @@ module ET
       dest
     end
 
-    def submit_challenge(challenge)
-      submission_file = challenge.archive!
-      RestClient.post(submission_url(challenge.slug),
+    def submit_lesson(lesson)
+      submission_file = lesson.archive!
+      RestClient.post(submission_url(lesson.slug),
         { submission: { archive: File.new(submission_file) }},
         { "Authorization" => auth_header })
     end
 
     private
 
-    def challenge_url(slug)
+    def lesson_url(slug)
       URI.join(host, "lessons/#{slug}.json").to_s
     end
 
-    def challenges_url
-      URI.join(host, "lessons.json?type=challenge").to_s
+    def lessons_url
+      URI.join(host, "lessons.json?submittable=1").to_s
     end
 
     def submission_url(slug)

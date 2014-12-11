@@ -2,29 +2,27 @@ require "yaml"
 
 module SampleFiles
   def write_sample_config_to(dir, additional_settings = nil)
-    config = {
+    settings = {
       "username" => "bob",
       "token" => "1234",
       "host" => "http://localhost:3000"
     }
 
     if additional_settings
-      config = config.merge(additional_settings)
+      settings = settings.merge(additional_settings)
     end
 
-    path = File.join(dir, ".et")
-    File.write(path, config.to_yaml)
+    config = ET::Config.new(dir)
+    config.save!(settings)
   end
 
-  def write_sample_challenge_to(working_dir, slug)
-    options = { "title" => slug.capitalize, "slug" => slug }
+  def add_sample_exercise(dir)
+    system("cp", "-r", project_root.join("spec/data/sample-exercise").to_s, dir)
+    File.join(dir, "sample-exercise")
+  end
 
-    dir = File.join(working_dir, slug)
-    system("mkdir #{dir}")
-
-    File.write(File.join(dir, "README.md"), "# README")
-    File.write(File.join(dir, ".lesson.yml"), options.to_yaml)
-
-    dir
+  def add_sample_challenge(dir)
+    system("cp", "-r", project_root.join("spec/data/sample-challenge").to_s, dir)
+    File.join(dir, "sample-challenge")
   end
 end

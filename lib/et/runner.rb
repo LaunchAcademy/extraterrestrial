@@ -16,12 +16,12 @@ module ET
 
       pre { |_, _, _, _| check_config! }
 
-      desc "Initialize current directory as challenge work area."
+      desc "Initialize current directory as a work area."
       skips_pre
       command :init do |c|
         c.flag [:u, :user], desc: "Username"
         c.flag [:t, :token], desc: "Login token"
-        c.flag [:h, :host], desc: "Server hosting the challenges"
+        c.flag [:h, :host], desc: "Server hosting the lessons"
 
         c.action do |_global_options, options, _cmdargs|
           settings = {
@@ -31,25 +31,25 @@ module ET
           }
 
           settings = prompt_for_missing(settings)
-          save_config(settings)
+          config.save!(settings)
 
           puts "Saved configuration to #{config.path}"
         end
       end
 
-      desc "List available challenges."
+      desc "List available lessons."
       command :list do |c|
         c.action do |_global_options, _options, _cmdargs|
-          Formatter.print_table(api.list_challenges, :slug, :title)
+          Formatter.print_table(api.list_lessons, :slug, :title, :type)
         end
       end
 
-      desc "Download challenge to your working area."
+      desc "Download lesson to your working area."
       command :get do |c|
         c.action do |_global_options, _options, cmdargs|
           cmdargs.each do |slug|
-            challenge = api.get_challenge(slug)
-            archive = api.download_file(challenge[:archive_url])
+            lesson = api.get_lesson(slug)
+            archive = api.download_file(lesson[:archive_url])
 
             if system("tar zxf #{archive} -C #{cwd}")
               system("rm #{archive}")
@@ -62,16 +62,29 @@ module ET
         end
       end
 
-      desc "Submit the challenge in this directory."
+      desc "Submit the lesson in this directory."
       command :submit do |c|
         c.action do |_global_options, _options, _cmdargs|
-          challenge = Challenge.new(cwd)
+          lesson = Lesson.new(cwd)
 
-          if challenge.exists?
-            api.submit_challenge(challenge)
-            puts "Challenge submitted"
+          if lesson.exists?
+            api.submit_lesson(lesson)
+            puts "Lesson submitted"
           else
-            raise StandardError.new("Not in a challenge directory.")
+            raise StandardError.new("Not in a lesson directory.")
+          end
+        end
+      end
+
+      desc "Run an exercise test suite."
+      command :test do |c|
+        c.action do |_global_options, _options, _cmdargs|
+          exercise = Exercise.new(cwd)
+
+          if exercise.exists?
+            exercise.run_tests
+          else
+            raise StandardError.new("Not in an exercise directory.")
           end
         end
       end
@@ -135,14 +148,6 @@ module ET
       else
         raise StandardError.new("Could not find configuration file. " +
           "Run `et init` to create one.")
-      end
-    end
-
-    def save_config(settings)
-      if config.exists?
-        config.update(settings)
-      else
-        File.write(File.join(cwd, ".et"), settings.to_yaml)
       end
     end
   end
