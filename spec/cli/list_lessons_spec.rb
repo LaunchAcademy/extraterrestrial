@@ -17,11 +17,13 @@ describe "list lessons" do
         expect(runner.go(["list"])).to eq(0)
       end
 
-      expect(stdout).to include("Guess the Number")
-      expect(stdout).to include("guess-the-number")
+      expect(stdout).to include("Max Number")
+      expect(stdout).to include("max-number")
+      expect(stdout).to include("exercise")
 
       expect(stdout).to include("Optimal Guesser")
       expect(stdout).to include("optimal-guesser")
+      expect(stdout).to include("challenge")
     end
   end
 end
