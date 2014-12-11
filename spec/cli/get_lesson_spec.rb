@@ -1,5 +1,5 @@
-describe "get challenge" do
-  let(:challenge_info) do
+describe "get lesson" do
+  let(:lesson_info) do
     {
       title: "Some Challenge",
       slug: "some-challenge",
@@ -12,13 +12,13 @@ describe "get challenge" do
   end
 
   context "when in a working area" do
-    it "downloads and extracts the challenge" do
+    it "downloads and extracts the lesson" do
       tmp_archive_path = File.join(Dir.tmpdir, "some-challenge.tar.gz")
-      system("cp #{sample_archive_path} #{tmp_archive_path}")
+      system("cp", sample_archive_path.to_s, tmp_archive_path)
 
-      expect_any_instance_of(ET::API).to receive(:get_challenge).
+      expect_any_instance_of(ET::API).to receive(:get_lesson).
         with("some-challenge").
-        and_return(challenge_info)
+        and_return(lesson_info)
 
       expect_any_instance_of(ET::API).to receive(:download_file).
         with("http://localhost:3000/some-challenge.tar.gz").

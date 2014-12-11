@@ -16,12 +16,12 @@ module ET
 
       pre { |_, _, _, _| check_config! }
 
-      desc "Initialize current directory as challenge work area."
+      desc "Initialize current directory as a work area."
       skips_pre
       command :init do |c|
         c.flag [:u, :user], desc: "Username"
         c.flag [:t, :token], desc: "Login token"
-        c.flag [:h, :host], desc: "Server hosting the challenges"
+        c.flag [:h, :host], desc: "Server hosting the lessons"
 
         c.action do |_global_options, options, _cmdargs|
           settings = {
@@ -37,19 +37,19 @@ module ET
         end
       end
 
-      desc "List available challenges."
+      desc "List available lessons."
       command :list do |c|
         c.action do |_global_options, _options, _cmdargs|
-          Formatter.print_table(api.list_challenges, :slug, :title)
+          Formatter.print_table(api.list_lessons, :slug, :title)
         end
       end
 
-      desc "Download challenge to your working area."
+      desc "Download lesson to your working area."
       command :get do |c|
         c.action do |_global_options, _options, cmdargs|
           cmdargs.each do |slug|
-            challenge = api.get_challenge(slug)
-            archive = api.download_file(challenge[:archive_url])
+            lesson = api.get_lesson(slug)
+            archive = api.download_file(lesson[:archive_url])
 
             if system("tar zxf #{archive} -C #{cwd}")
               system("rm #{archive}")
@@ -62,13 +62,13 @@ module ET
         end
       end
 
-      desc "Submit the challenge in this directory."
+      desc "Submit the lesson in this directory."
       command :submit do |c|
         c.action do |_global_options, _options, _cmdargs|
           challenge = Challenge.new(cwd)
 
           if challenge.exists?
-            api.submit_challenge(challenge)
+            api.submit_lesson(challenge)
             puts "Challenge submitted"
           else
             raise StandardError.new("Not in a challenge directory.")

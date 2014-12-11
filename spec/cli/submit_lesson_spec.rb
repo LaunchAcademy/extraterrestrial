@@ -1,4 +1,4 @@
-describe "submit challenge" do
+describe "submit lesson" do
   let(:sample_archive_path) do
     project_root.join("spec/data/archive.tar.gz")
   end
@@ -9,7 +9,7 @@ describe "submit challenge" do
         write_sample_config_to(tmpdir)
         challenge_dir = add_sample_challenge(tmpdir)
 
-        expect_any_instance_of(ET::API).to receive(:submit_challenge).
+        expect_any_instance_of(ET::API).to receive(:submit_lesson).
           and_return(true)
 
         runner = ET::Runner.new(challenge_dir)
