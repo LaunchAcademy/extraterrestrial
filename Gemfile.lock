@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    et (0.5.1)
+    et (0.5.2)
       gli (= 2.11.0)
       multipart-post (~> 2.0)
       rspec (~> 3.0)
