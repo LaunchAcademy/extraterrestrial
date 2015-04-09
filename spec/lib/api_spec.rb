@@ -7,8 +7,8 @@ describe ET::API do
     end
 
     it "queries for a list of lessons" do
-      expect(RestClient).to receive(:get).
-        with("http://localhost:3000/lessons.json?submittable=1").
+      expect(Net::HTTP).to receive(:get).
+        with(URI("http://localhost:3000/lessons.json?submittable=1")).
         and_return(lessons_response)
 
       results = api.list_lessons
@@ -24,8 +24,8 @@ describe ET::API do
     end
 
     it "queries for a single lesson" do
-      expect(RestClient).to receive(:get).
-        with("http://localhost:3000/lessons/rock-paper-scissors.json").
+      expect(Net::HTTP).to receive(:get).
+        with(URI("http://localhost:3000/lessons/rock-paper-scissors.json")).
         and_return(lesson_response)
 
       result = api.get_lesson("rock-paper-scissors")
