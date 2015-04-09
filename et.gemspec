@@ -22,6 +22,6 @@ DESC
   s.add_development_dependency("rake", "~> 10")
   s.add_runtime_dependency("rspec", "~> 3.0")
   s.add_runtime_dependency("rspec-mocks", "~> 3.0")
-  s.add_runtime_dependency("rest-client", "~> 1.7")
+  s.add_runtime_dependency("multipart-post", "~> 2.0")
   s.add_runtime_dependency("gli", "2.11.0")
 end

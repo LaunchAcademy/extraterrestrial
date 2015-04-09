@@ -1,3 +1,5 @@
+require "tmpdir"
+
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each do |f|
   require f
 end
@@ -51,7 +53,7 @@ RSpec.configure do |config|
   config.include ArchiveHelper
 
   config.before :each do
-    allow(RestClient).to receive(:get)
-    allow(RestClient).to receive(:post)
+    allow(Net::HTTP).to receive(:start)
+    allow(Net::HTTP).to receive(:get)
   end
 end
