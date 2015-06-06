@@ -14,8 +14,16 @@ module ET
     end
 
     def list_lessons
-      response = Net::HTTP.get(lessons_url)
-      JSON.parse(response, symbolize_names: true)[:lessons]
+      request = Net::HTTP::Get.new(lessons_url)
+      request["Authorization"] = auth_header
+
+      response = nil
+      Net::HTTP.start(lessons_url.host, lessons_url.port,
+        use_ssl: lessons_url.scheme == "https") do |http|
+
+        response = http.request(request)
+      end
+      JSON.parse(response.body, symbolize_names: true)[:lessons]
     end
 
     def get_lesson(slug)

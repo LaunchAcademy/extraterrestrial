@@ -1,6 +1,7 @@
 module ET
   class Formatter
     def self.print_table(data, *headers)
+      return puts "No challenges assigned" if data.empty?
       column_widths = headers.map do |header|
         data.map { |row| row[header].length }.max
       end
