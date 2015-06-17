@@ -27,8 +27,16 @@ module ET
     end
 
     def get_lesson(slug)
-      response = Net::HTTP.get(lesson_url(slug))
-      body = JSON.parse(response, symbolize_names: true)
+      request = Net::HTTP::Get.new(lesson_url(slug))
+      request["Authorization"] = auth_header
+
+      response = nil
+      Net::HTTP.start(lessons_url.host, lessons_url.port,
+        use_ssl: lessons_url.scheme == "https") do |http|
+
+        response = http.request(request)
+      end
+      body = JSON.parse(response.body, symbolize_names: true)
       body[:lesson]
     end
 
@@ -69,7 +77,7 @@ module ET
     private
 
     def lesson_url(slug)
-      URI.join(host, "lessons/#{slug}.json")
+      URI.join(host, "lessons/#{slug}.json?submittable=1")
     end
 
     def lessons_url

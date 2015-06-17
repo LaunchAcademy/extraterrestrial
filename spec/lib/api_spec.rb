@@ -35,9 +35,20 @@ describe ET::API do
     end
 
     it "queries for a single lesson" do
-      expect(Net::HTTP).to receive(:get).
-        with(URI("http://localhost:3000/lessons/rock-paper-scissors.json")).
-        and_return(lesson_response)
+      request = {}
+      response = double
+      http = double
+      lesson_uri = URI("http://localhost:3000/lessons/rock-paper-scissors.json?submittable=1")
+      expect(Net::HTTP::Get).to receive(:new).
+        with(lesson_uri).
+        and_return(request)
+      expect(Net::HTTP).to receive(:start).with(
+        lesson_uri.host,
+        lesson_uri.port,
+        use_ssl: lesson_uri.scheme == "https").
+        and_yield(http)
+      expect(http).to receive(:request).and_return(response)
+      expect(response).to receive(:body).and_return(lesson_response)
 
       result = api.get_lesson("rock-paper-scissors")
 
