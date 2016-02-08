@@ -1,6 +1,25 @@
 describe ET::API do
   let(:api) { ET::API.new(host: "http://localhost:3000") }
 
+  describe "version check" do
+    let(:version) { ET::VERSION }
+    
+    it "queries for the newest version" do
+      newest_version = api.send(:retrieve_newest_gem_version_number)
+      expect(newest_version.to_f).to be >= version.to_f
+    end
+
+    it "retrieves the current version" do      
+      current_version = api.send(:retrieve_current_gem_version_number)
+      expect(current_version).to eq(verison)
+    end
+
+    it "compares the current version to the new version" do 
+      version_match = api.send(:check_version!)
+      expect(version_match).to be true
+    end
+  end
+
   describe "lessons" do
     let(:lessons_response) do
       File.read("spec/data/lessons.json")
