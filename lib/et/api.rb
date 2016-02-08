@@ -11,6 +11,7 @@ module ET
       @host = options[:host]
       @username = options[:username]
       @token = options[:token]
+      check_version!
     end
 
     def list_lessons
@@ -98,6 +99,28 @@ module ET
 
     def auth_header
       "Basic #{credentials}"
+    end
+
+    def check_version!
+      newest_version  = retrieve_newest_gem_version_number
+      current_version = retrieve_current_gem_version_number
+
+      unless newest_version == current_version
+        raise StandardError.new("Et gem is out of date."+
+          " Please download version #{newest_version}")
+      end
+      true
+    end
+
+    def retrieve_newest_gem_version_number
+        url = "https://rubygems.org/api/v1/versions/et/latest.json"
+        uri = URI.parse(url)
+        response = Net::HTTP.get_response(uri)
+        newest_version = JSON.parse(response.body)["version"]
+    end
+
+    def retrieve_current_gem_version_number
+      Gem.loaded_specs["et"].version.version
     end
   end
 end
