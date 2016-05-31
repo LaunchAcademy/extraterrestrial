@@ -11,7 +11,7 @@ describe ET::Challenge do
       end
     end
 
-    it "checks parent directories for the challenge file", focus: true do
+    it "checks parent directories for the challenge file" do
       Dir.mktmpdir do |tmpdir|
         challenge_dir = add_sample_challenge(tmpdir)
 
