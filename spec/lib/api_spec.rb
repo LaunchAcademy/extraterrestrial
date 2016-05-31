@@ -40,6 +40,7 @@ describe ET::API do
       request = {}
       response = double
       http = double
+
       lesson_uri = URI("http://localhost:3000/lessons/rock-paper-scissors.json?submittable=1")
       expect(Net::HTTP::Get).to receive(:new).
         with(lesson_uri).
