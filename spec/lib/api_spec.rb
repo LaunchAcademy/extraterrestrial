@@ -62,12 +62,19 @@ describe ET::API do
 
   context 'ssl verification' do
     it 're-raises an exception for non Windows machines' do
-      allow(Net::HTTP).to receive(:start).and_raise(OpenSSL::SSL::SSLError)
-      expect{ api.list_lessons}.to raise_error(OpenSSL::SSL::SSLError)
+      dbl_os = double
+      allow(dbl_os).to receive(:platform_family?).with(:windows).and_return(false)
+      expect(ET::OperatingSystem).to receive(:new).and_return(dbl_os)
+
+      expect(Net::HTTP).to receive(:start).and_raise(OpenSSL::SSL::SSLError)
+      expect{ api.list_lessons }.to raise_error(OpenSSL::SSL::SSLError)
     end
 
     it 'swallows the exception for windows machines and reissues' do
       http = double
+      allow(http).to receive(:start).and_yield(http)
+      allow(http).to receive(:verify_mode=)
+      allow(http).to receive(:use_ssl=)
       response = double
 
       allow(http).to receive(:request).and_return(response)
@@ -80,12 +87,10 @@ describe ET::API do
           use_ssl: lessons_uri.scheme == 'https').
             and_raise(OpenSSL::SSL::SSLError)
 
-      expect(Net::HTTP).to receive(:start).with(
+      expect(Net::HTTP).to receive(:new).with(
           lessons_uri.host,
-          lessons_uri.port,
-          use_ssl: lessons_uri.scheme == 'https',
-          ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).
-          and_yield(http)
+          lessons_uri.port).
+          and_return(http)
 
       dbl_os = double
       allow(dbl_os).to receive(:platform_family?).and_return(:windows)

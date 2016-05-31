@@ -2,6 +2,7 @@ require "net/http/post/multipart"
 require "securerandom"
 require "base64"
 require "json"
+require "openssl"
 
 module ET
   class API
@@ -67,10 +68,10 @@ module ET
         end
       rescue OpenSSL::SSL::SSLError => e
         if operating_system.platform_family?(:windows)
-          Net::HTTP.start(uri.host, uri.port,
-            use_ssl: uri.scheme == "https",
-            ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
-
+          https = Net::HTTP.new(uri.host, uri.port)
+          https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+          https.use_ssl = uri.scheme == 'https'
+          https.start do |http|
             http.request(request)
           end
         else
