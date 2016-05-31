@@ -1,6 +1,7 @@
 require "tmpdir"
 require_relative "et/version"
 require_relative "et/runner"
+require_relative "et/operating_system"
 require_relative "et/api"
 require_relative "et/config"
 require_relative "et/formatter"

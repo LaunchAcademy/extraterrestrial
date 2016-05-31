@@ -1,16 +1,18 @@
 describe ET::API do
   let(:api) { ET::API.new(host: "http://localhost:3000") }
+  let(:lessons_uri) do
+    URI("http://localhost:3000/lessons.json?submittable=1")
+  end
+
+  let(:lessons_response) do
+    File.read("spec/data/lessons.json")
+  end
 
   describe "lessons" do
-    let(:lessons_response) do
-      File.read("spec/data/lessons.json")
-    end
-
     it "queries for a list of lessons" do
       request = {}
       response = double
       http = double
-      lessons_uri = URI("http://localhost:3000/lessons.json?submittable=1")
       expect(Net::HTTP::Get).to receive(:new).
         with(lessons_uri).
         and_return(request)
@@ -54,6 +56,41 @@ describe ET::API do
 
       expect(result[:title]).to eq("Rock, Paper, Scissors")
       expect(result[:archive_url]).to eq("http://example.com/rock-paper-scissors.tar.gz")
+    end
+  end
+
+  context 'ssl verification' do
+    it 're-raises an exception for non Windows machines' do
+      allow(Net::HTTP).to receive(:start).and_raise(OpenSSL::SSL::SSLError)
+      expect{ api.list_lessons}.to raise_error(OpenSSL::SSL::SSLError)
+    end
+
+    it 'swallows the exception for windows machines and reissues' do
+      http = double
+      response = double
+
+      allow(http).to receive(:request).and_return(response)
+      allow(response).to receive(:body).and_return(lessons_response)
+
+      allow(Net::HTTP).to receive(:start).
+        with(
+          lessons_uri.host,
+          lessons_uri.port,
+          use_ssl: lessons_uri.scheme == 'https').
+            and_raise(OpenSSL::SSL::SSLError)
+
+      expect(Net::HTTP).to receive(:start).with(
+          lessons_uri.host,
+          lessons_uri.port,
+          use_ssl: lessons_uri.scheme == 'https',
+          ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).
+          and_yield(http)
+
+      dbl_os = double
+      allow(dbl_os).to receive(:platform_family?).and_return(:windows)
+      allow(ET::OperatingSystem).to receive(:new).and_return(dbl_os)
+
+      api.list_lessons
     end
   end
 end

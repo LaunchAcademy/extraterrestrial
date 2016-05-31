@@ -59,10 +59,23 @@ module ET
     private
     def issue_request(request)
       uri = URI.parse(@host)
-      Net::HTTP.start(uri.host, uri.port,
-        use_ssl: uri.scheme == "https") do |http|
+      begin
+        Net::HTTP.start(uri.host, uri.port,
+          use_ssl: uri.scheme == "https") do |http|
 
-        http.request(request)
+          http.request(request)
+        end
+      rescue OpenSSL::SSL::SSLError => e
+        if operating_system.platform_family?(:windows)
+          Net::HTTP.start(uri.host, uri.port,
+            use_ssl: uri.scheme == "https",
+            ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
+
+            http.request(request)
+          end
+        else
+          raise e
+        end
       end
     end
 
@@ -88,6 +101,10 @@ module ET
 
     def auth_header
       "Basic #{credentials}"
+    end
+
+    def operating_system
+      @os ||= ET::OperatingSystem.new
     end
   end
 end
