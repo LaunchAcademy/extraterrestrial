@@ -17,12 +17,7 @@ module ET
       request = Net::HTTP::Get.new(lessons_url)
       request["Authorization"] = auth_header
 
-      response = nil
-      Net::HTTP.start(lessons_url.host, lessons_url.port,
-        use_ssl: lessons_url.scheme == "https") do |http|
-
-        response = http.request(request)
-      end
+      response = issue_request(request)
       JSON.parse(response.body, symbolize_names: true)[:lessons]
     end
 
@@ -30,12 +25,8 @@ module ET
       request = Net::HTTP::Get.new(lesson_url(slug))
       request["Authorization"] = auth_header
 
-      response = nil
-      Net::HTTP.start(lessons_url.host, lessons_url.port,
-        use_ssl: lessons_url.scheme == "https") do |http|
+      response = issue_request(request)
 
-        response = http.request(request)
-      end
       body = JSON.parse(response.body, symbolize_names: true)
       body[:lesson]
     end
@@ -44,16 +35,11 @@ module ET
       uri = URI(url)
       dest = random_filename
 
-      Net::HTTP.start(uri.host, uri.port,
-        use_ssl: uri.scheme == "https") do |http|
-
-        resp = http.get(uri.path)
-
-        open(dest, 'wb') do |file|
-          file.write(resp.body)
-        end
+      request = Net::HTTP::Get.new(uri.path)
+      response = issue_request(request)
+      open(dest, 'wb') do |file|
+        file.write(response.body)
       end
-
       dest
     end
 
@@ -66,15 +52,19 @@ module ET
           "submission[archive]" => UploadIO.new(f, "application/x-tar", "archive.tar.gz"))
         request["Authorization"] = auth_header
 
-        Net::HTTP.start(url.host, url.port,
-          use_ssl: url.scheme == "https") do |http|
-
-          http.request(request)
-        end
+        issue_request(request)
       end
     end
 
     private
+    def issue_request(request)
+      uri = URI.parse(@host)
+      Net::HTTP.start(uri.host, uri.port,
+        use_ssl: uri.scheme == "https") do |http|
+
+        http.request(request)
+      end
+    end
 
     def lesson_url(slug)
       URI.join(host, "lessons/#{slug}.json?submittable=1")
