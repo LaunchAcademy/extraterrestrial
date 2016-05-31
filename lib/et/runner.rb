@@ -50,13 +50,14 @@ module ET
           cmdargs.each do |slug|
             lesson = api.get_lesson(slug)
             archive = api.download_file(lesson[:archive_url])
+            archive_manager = ET::ArchiveManager.new(archive, cwd)
+            archive_manager.unpack
 
-            if system("tar zxf #{archive} -C #{cwd}")
-              system("rm #{archive}")
-              challenge_dir = File.join(cwd, slug)
-              puts "Extracted challenge to #{challenge_dir}"
+            if !archive_manager.unpacked_files.empty?
+              archive_manager.delete_archive
+              puts "'#{slug}' extracted to '#{archive_manager.destination}'"
             else
-              raise StandardError.new("Failed to extract the challenge archive.")
+              raise StandardError.new("Failed to extract the archive.")
             end
           end
         end

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe ET::OperatingSystem do
   context '10.10' do
     let(:minor) { '10.10' }
