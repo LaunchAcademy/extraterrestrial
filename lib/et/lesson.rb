@@ -21,7 +21,7 @@ module ET
                 relative_path = file.gsub(dir + "/", "")
                 if !ignored_files.include?(relative_path)
                   if FileTest.directory?(file)
-                    tar.mkdir(relative_path, 444)
+                    tar.mkdir(relative_path, 755)
                   else
                     file_contents = File.read(file)
                     tar.add_file_simple("./" + relative_path, 444, file_contents.length) do |io|
