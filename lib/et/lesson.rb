@@ -20,9 +20,13 @@ module ET
               Dir.glob(File.join(dir, "**/*")).each do |file|
                 relative_path = file.gsub(dir + "/", "")
                 if !ignored_files.include?(relative_path)
-                  file_contents = File.read(file)
-                  tar.add_file_simple("./" + relative_path, 0444, file_contents.length) do |io|
-                    io.write(file_contents)
+                  if FileTest.directory?(file)
+                    tar.mkdir(file, 444)
+                  else
+                    file_contents = File.read(file)
+                    tar.add_file_simple("./" + relative_path, 444, file_contents.length) do |io|
+                      io.write(file_contents)
+                    end
                   end
                 end
               end
