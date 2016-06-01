@@ -1,5 +1,6 @@
 require "pathname"
 require "securerandom"
+require "rubygems/package"
 
 module ET
   class Lesson
@@ -13,19 +14,22 @@ module ET
       if exists?
         filepath = random_archive_path
 
-        cmd = "tar zcf #{filepath} -C #{dir}"
-
-        ignored_files.each do |file|
-          cmd += " --exclude='#{file}'"
+        File.open(filepath, "wb") do |file|
+          Zlib::GzipWriter.wrap(file) do |gz|
+            Gem::Package::TarWriter.new(gz) do |tar|
+              Dir.glob(File.join(dir, "**/*")).each do |file|
+                relative_path = file.gsub(dir + "/", "")
+                if !ignored_files.include?(relative_path)
+                  file_contents = File.read(file)
+                  tar.add_file_simple("./" + relative_path, 0444, file_contents.length) do |io|
+                    io.write(file_contents)
+                  end
+                end
+              end
+            end
+          end
         end
-
-        cmd += " ."
-
-        if system(cmd)
-          filepath
-        else
-          nil
-        end
+        filepath
       else
         nil
       end
