@@ -12,7 +12,9 @@ describe ET::Lesson do
       allow(Dir).to receive(:mktmpdir).and_return(path)
       allow(SecureRandom).to receive(:hex).and_return(filename)
 
-      lesson = ET::Lesson.new(File.join(File.dirname(__FILE__), '../data/sample-challenge'))
+      exercise_path = File.expand_path(
+        File.join(File.dirname(__FILE__), '../data/sample-exercise'))
+      lesson = ET::Lesson.new(exercise_path)
       resulting_file = lesson.archive!
 
       expect(resulting_file).to_not be_nil
