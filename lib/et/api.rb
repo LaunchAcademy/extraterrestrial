@@ -37,11 +37,15 @@ module ET
       dest = random_filename
 
       request = Net::HTTP::Get.new(uri.path)
-      response = issue_request(request)
-      open(dest, 'wb') do |file|
-        file.write(response.body)
+      response = issue_request(request, url)
+      if response.code == "200"
+        open(dest, 'wb') do |file|
+          file.write(response.body)
+        end
+        dest
+      else
+        nil
       end
-      dest
     end
 
     def submit_lesson(lesson)
@@ -58,8 +62,8 @@ module ET
     end
 
     private
-    def issue_request(request)
-      uri = URI.parse(@host)
+    def issue_request(request, url = nil)
+      uri = URI.parse(url || @host)
       begin
         Net::HTTP.start(uri.host, uri.port,
           use_ssl: uri.scheme == "https") do |http|

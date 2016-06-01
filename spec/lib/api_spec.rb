@@ -99,4 +99,39 @@ describe ET::API do
       api.list_lessons
     end
   end
+
+  context 'downloading files' do
+    it 'returns nil when a 404 is encountered' do
+
+      http = double
+      response = double
+      allow(response).to receive(:code).and_return("404")
+      allow(http).to receive(:request).and_return(response)
+      allow(Net::HTTP).to receive(:start).and_yield(http)
+
+      expect(api.download_file("http://example.com/somefile.tar.gz")).to be_nil
+    end
+    it 'returns a local file when a challenge is successfully downloaded' do
+      path = '/tmp/et'
+      filename = 'fab'
+
+      FileUtils.rm_rf(File.join(path, filename))
+      FileUtils.mkdir_p(path)
+
+      allow(Dir).to receive(:mktmpdir).and_return(path)
+      allow(SecureRandom).to receive(:hex).and_return(filename)
+
+      http = double
+      response = double
+      file_contents = File.read(File.join(File.dirname(__FILE__), "../data/some-challenge.tar.gz"))
+      allow(response).to receive(:body).and_return(file_contents)
+      allow(response).to receive(:code).and_return("200")
+      allow(http).to receive(:request).and_return(response)
+      allow(Net::HTTP).to receive(:start).and_yield(http)
+
+      url = 'http://example.com/some-challenge.tar.gz'
+
+      expect(api.download_file(url)).to eql(File.join(path, filename))
+    end
+  end
 end
