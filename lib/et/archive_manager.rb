@@ -1,5 +1,4 @@
 require "rubygems/package"
-require "pry"
 
 class ET::ArchiveManager
   attr_reader :archive, :destination, :unpacked_files
