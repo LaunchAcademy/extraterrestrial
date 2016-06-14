@@ -24,7 +24,7 @@ module ET
                     tar.mkdir(relative_path, 0755)
                   else
                     file_contents = File.read(file)
-                    tar.add_file_simple("./" + relative_path, 0555, file_contents.length) do |io|
+                    tar.add_file_simple("./" + relative_path, 0555, file_contents.bytesize) do |io|
                       io.write(file_contents)
                     end
                   end
