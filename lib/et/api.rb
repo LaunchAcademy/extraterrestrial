@@ -2,6 +2,7 @@ require "net/http/post/multipart"
 require "securerandom"
 require "base64"
 require "json"
+require "openssl"
 
 module ET
   class API
@@ -17,12 +18,7 @@ module ET
       request = Net::HTTP::Get.new(lessons_url)
       request["Authorization"] = auth_header
 
-      response = nil
-      Net::HTTP.start(lessons_url.host, lessons_url.port,
-        use_ssl: lessons_url.scheme == "https") do |http|
-
-        response = http.request(request)
-      end
+      response = issue_request(request)
       JSON.parse(response.body, symbolize_names: true)[:lessons]
     end
 
@@ -30,12 +26,8 @@ module ET
       request = Net::HTTP::Get.new(lesson_url(slug))
       request["Authorization"] = auth_header
 
-      response = nil
-      Net::HTTP.start(lessons_url.host, lessons_url.port,
-        use_ssl: lessons_url.scheme == "https") do |http|
+      response = issue_request(request)
 
-        response = http.request(request)
-      end
       body = JSON.parse(response.body, symbolize_names: true)
       body[:lesson]
     end
@@ -44,17 +36,16 @@ module ET
       uri = URI(url)
       dest = random_filename
 
-      Net::HTTP.start(uri.host, uri.port,
-        use_ssl: uri.scheme == "https") do |http|
-
-        resp = http.get(uri.path)
-
+      request = Net::HTTP::Get.new(uri.path)
+      response = issue_request(request, url)
+      if response.code == "200"
         open(dest, 'wb') do |file|
-          file.write(resp.body)
+          file.write(response.body)
         end
+        dest
+      else
+        nil
       end
-
-      dest
     end
 
     def submit_lesson(lesson)
@@ -66,15 +57,32 @@ module ET
           "submission[archive]" => UploadIO.new(f, "application/x-tar", "archive.tar.gz"))
         request["Authorization"] = auth_header
 
-        Net::HTTP.start(url.host, url.port,
-          use_ssl: url.scheme == "https") do |http|
-
-          http.request(request)
-        end
+        issue_request(request)
       end
     end
 
     private
+    def issue_request(request, url = nil)
+      uri = URI.parse(url || @host)
+      begin
+        Net::HTTP.start(uri.host, uri.port,
+          use_ssl: uri.scheme == "https") do |http|
+
+          http.request(request)
+        end
+      rescue OpenSSL::SSL::SSLError => e
+        if operating_system.platform_family?(:windows)
+          https = Net::HTTP.new(uri.host, uri.port)
+          https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+          https.use_ssl = uri.scheme == 'https'
+          https.start do |http|
+            http.request(request)
+          end
+        else
+          raise e
+        end
+      end
+    end
 
     def lesson_url(slug)
       URI.join(host, "lessons/#{slug}.json?submittable=1")
@@ -98,6 +106,10 @@ module ET
 
     def auth_header
       "Basic #{credentials}"
+    end
+
+    def operating_system
+      @os ||= ET::OperatingSystem.new
     end
   end
 end
