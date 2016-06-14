@@ -40,7 +40,7 @@ module ET
       desc "List available lessons."
       command :list do |c|
         c.action do |_global_options, _options, _cmdargs|
-          Formatter.print_table(api.list_lessons, :slug, :title, :type)
+          Formatter.new(api.list_lessons, :slug, :title, :type).print_table
         end
       end
 
