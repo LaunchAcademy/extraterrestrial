@@ -1,0 +1,109 @@
+{
+  "lessons": [
+    {
+      "title": "Working with Open Source Software, Ruby Gems, and Bundler",
+      "slug": "working-with-open-source-software-ruby-gems-and-bundler",
+      "type": "video"
+    },
+    {
+      "title": "How to Use ET",
+      "slug": "how-to-use-et",
+      "type": "article"
+    },
+    {
+      "title": "Command Line: Packages",
+      "slug": "command-line-packages",
+      "type": "article"
+    },
+    {
+      "title": "API Usage and Fundamentals",
+      "slug": "consuming-web-apis",
+      "type": "article"
+    },
+    {
+      "title": "Unit Testing with JavaScript and Jasmine",
+      "slug": "unit-testing-javascript-with-jasmine",
+      "type": "article"
+    },
+    {
+      "title": "Post Career Day",
+      "slug": "post-career-day",
+      "type": "article"
+    },
+    {
+      "title": "Method Testing & Test Driven Development",
+      "slug": "tdd-method-testing",
+      "type": "article"
+    },
+    {
+      "title": "Getting Started on Windows",
+      "slug": "getting-started-on-windows",
+      "type": "article"
+    },
+    {
+      "title": "How To: Peer Code Review ",
+      "slug": "peer-code-review-how-to",
+      "type": "article"
+    },
+    {
+      "title": "Need the Ingredients",
+      "slug": "need-the-ingredients",
+      "type": "exercise"
+    },
+    {
+      "title": "Online Orientation Guide",
+      "slug": "online-orientation-guide",
+      "type": "article"
+    },
+    {
+      "title": "Getting Familiar with Atom",
+      "slug": "getting-better-with-atom",
+      "type": "article"
+    },
+    {
+      "title": "Practical Postgres",
+      "slug": "practical-postgres",
+      "type": "article"
+    },
+    {
+      "title": "Read Eloquent Ruby",
+      "slug": "read-ruby-books",
+      "type": "article"
+    },
+    {
+      "title": "Creating Custom Objects in JavaScript",
+      "slug": "custom-js-objects",
+      "type": "article"
+    },
+    {
+      "title": "Networking and Getting Involved",
+      "slug": "networking-and-getting-involved",
+      "type": "article"
+    },
+    {
+      "title": "A Brief Introduction to Modules",
+      "slug": "modules-introduction",
+      "type": "video"
+    },
+    {
+      "title": "Welcome to Launch Academy Online",
+      "slug": "welcome-to-launch-academy-online",
+      "type": "article"
+    },
+    {
+      "title": "Check out our online curriculum",
+      "slug": "check-online-curriculum",
+      "type": "article"
+    },
+    {
+      "title": "React Component Lifecycle",
+      "slug": "react-component-lifecycle",
+      "type": "article"
+    },
+    {
+      "title": "Testing ActiveRecord Validations",
+      "slug": "testing-activerecord-validations",
+      "type": "article"
+    }
+  ]
+}

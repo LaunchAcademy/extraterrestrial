@@ -19,17 +19,7 @@ module ET
 
       result = []
 
-      column_widths = headers.map do |header|
-        data.map { |row| row[header].length }.max
-      end
-
-      total_width = column_widths.reduce(0) do |width, sum|
-        sum + width + 3
-      end
-
-      header = build_row(headers, column_widths, YELLOW)
-
-      result << header
+      result << build_row(headers, column_widths, YELLOW)
       result << "\e[34m" + ("-" * total_width) + "\e[0m"
 
       data.each do |row|
@@ -41,6 +31,18 @@ module ET
     end
 
     private
+
+    def column_widths
+      headers.map do |header|
+        data.map { |row| row[header].length }.max
+      end
+    end
+
+    def total_width
+      column_widths.reduce(0) do |width, sum|
+        sum + width + 3
+      end
+    end
 
     def build_row(row, widths, color)
       row.zip(widths).map do |value, width|
