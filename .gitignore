@@ -3,3 +3,5 @@
 
 # Exclude a test-area for downloading/submitting challenges.
 /sample
+
+pkg/*
