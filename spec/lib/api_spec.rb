@@ -20,7 +20,7 @@ describe ET::API do
         end
       end
 
-      allow_any_instance_of(ET::API).to receive(:client).and_return(client)
+      allow_any_instance_of(ET::FallbackConnection).to receive(:with_ssl_fallback).and_yield(client)
 
       results = api.list_lessons
 
@@ -45,46 +45,15 @@ describe ET::API do
         end
       end
 
-      allow_any_instance_of(ET::API).to receive(:client).and_return(client)
+      allow_any_instance_of(ET::FallbackConnection).
+        to receive(:with_ssl_fallback).and_yield(client)
 
       result = api.get_lesson("rock-paper-scissors")
 
       expect(result['title']).to eq("Rock, Paper, Scissors")
       expect(result['archive_url']).to   eq('http://example.com/rock-paper-scissors.tar.gz')
     end
-  end
-
-  context 'ssl verification' do
-    it 're-raises an exception for non Windows machines' do
-      dbl_os = double
-      allow(dbl_os).to receive(:platform_family?).with(:windows).and_return(false)
-      expect(ET::OperatingSystem).to receive(:new).and_return(dbl_os)
-
-      allow_any_instance_of(Faraday::Connection).to receive(:get).and_raise(OpenSSL::SSL::SSLError)
-      expect{ api.list_lessons }.to raise_error(OpenSSL::SSL::SSLError)
-    end
-
-    it 'swallows the exception for windows machines and reissues' do
-      dbl_os = double
-      allow(dbl_os).to receive(:platform_family?).and_return(:windows)
-      allow(ET::OperatingSystem).to receive(:new).and_return(dbl_os)
-
-      called_twice = false
-      allow_any_instance_of(Faraday::Connection).to receive(:get) do |*args|
-        if args[0].ssl.verify != false
-          #simulate a windows SSL verification failed
-          raise OpenSSL::SSL::SSLError
-        elsif args[0].ssl.verify == false
-          #flip the switch that the request was reissued without SSL verification
-          called_twice = true
-          double(:body => '{}')
-        end
-      end
-
-      api.list_lessons
-      expect(called_twice).to be(true)
-    end
-  end
+  end  
 
   context 'downloading files' do
     it 'returns nil when a 404 is encountered' do
@@ -99,7 +68,9 @@ describe ET::API do
         end
       end
 
-      allow_any_instance_of(ET::API).to receive(:client).and_return(client)
+      allow_any_instance_of(ET::FallbackConnection).
+        to receive(:with_ssl_fallback).and_yield(client)
+
       expect(api.download_file("http://example.com/#{filename}")).to be_nil
     end
 
@@ -119,7 +90,8 @@ describe ET::API do
         end
       end
 
-      allow_any_instance_of(ET::API).to receive(:client).and_return(client)
+      allow_any_instance_of(ET::FallbackConnection).
+        to receive(:with_ssl_fallback).and_yield(client)
       allow(Dir).to receive(:mktmpdir).and_return(path)
       allow(SecureRandom).to receive(:hex).and_return(filename)
 
