@@ -10,9 +10,11 @@ module ET
 
     def files
       unless @files
-        @files = Rake::FileList[File.join(@path, "**/*")].
-          sub(File.join(@path, "/"), "").
-          exclude(ignore_globs)
+        @files = Rake::FileList[File.join(@path, "**/*")]
+        ignore_globs.each do |glob|
+          @files = @files.exclude(File.join(@path, glob))
+        end
+        @files = @files.sub(File.join(@path, "/"), "")
       end
 
       @files

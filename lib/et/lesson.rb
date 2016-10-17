@@ -17,7 +17,7 @@ module ET
         File.open(filepath, "wb") do |file|
           Zlib::GzipWriter.wrap(file) do |gz|
             Gem::Package::TarWriter.new(gz) do |tar|
-              ET::SubmissionFileList.new(File.join(dir)).each do |file|
+              ET::SubmissionFileList.new(dir).each do |file|
                 relative_path = file
                 absolute_path = File.join(dir, file)
 
