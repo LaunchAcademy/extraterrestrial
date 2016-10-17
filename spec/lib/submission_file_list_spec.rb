@@ -13,7 +13,11 @@ describe ET::SubmissionFileList do
     expect(file_list).to_not include('sample-challenge.md')
   end
 
-  it 'ignores a file included in a glob' do
+  it 'ignores a file included in the default globs' do
     expect(file_list).to_not include('node_modules/somefile.js')
+  end
+
+  it 'ignores a file included in the lesson.yml ignore' do
+    expect(file_list).to_not include('rando_folder/rando_file.js')
   end
 end

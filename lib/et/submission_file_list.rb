@@ -3,6 +3,10 @@ require "rake/file_list"
 module ET
   class SubmissionFileList
     include Enumerable
+    DEFAULT_IGNORE_GLOBS = [
+      '.lesson.yml',
+      'node_modules/**/*'
+    ]
 
     def initialize(path)
       @path = path
@@ -26,15 +30,14 @@ module ET
       end
     end
 
-
     protected
     def ignore_globs
-      lesson_ignore_globs + [".lesson.yml"]
+      lesson_ignore_globs + [] + DEFAULT_IGNORE_GLOBS
     end
 
     def lesson_ignore_globs
       unless @lesson_ignore_globs
-        lesson_yml = File.join(@path, ".lesson.yml")
+        lesson_yml = File.join(@path, '.lesson.yml')
         if FileTest.exists?(lesson_yml)
           @lesson_ignore_globs = YAML.load_file(lesson_yml)['ignore'] || []
         else
