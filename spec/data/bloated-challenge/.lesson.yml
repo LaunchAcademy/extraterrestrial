@@ -1,0 +1,7 @@
+---
+title: "Bloated Challenge"
+type: "challenge"
+description: "Some description."
+ignore:
+- "bloated-challenge.md"
+- "node_modules/**/*"
