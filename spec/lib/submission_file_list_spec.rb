@@ -14,6 +14,6 @@ describe ET::SubmissionFileList do
   end
 
   it 'ignores a file included in a glob' do
-    expect(file_list).to_not include('node_modules/somefile.js')
+    expect(file_list).to_not include('node_modules/boo/somefile.js')
   end
 end
