@@ -49,9 +49,4 @@ RSpec.configure do |config|
   config.include SampleFiles
   config.include PathHelper
   config.include ArchiveHelper
-
-  config.before :each do
-    allow(Net::HTTP).to receive(:start)
-    allow(Net::HTTP).to receive(:get)
-  end
 end

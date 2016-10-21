@@ -1,9 +1,9 @@
-require "net/http/post/multipart"
 require "securerandom"
 require "base64"
 require "json"
 require "openssl"
 
+require_relative "fallback_connection"
 module ET
   class API
     attr_reader :host, :username, :token
@@ -15,30 +15,29 @@ module ET
     end
 
     def list_lessons
-      request = Net::HTTP::Get.new(lessons_url)
-      request["Authorization"] = auth_header
-
-      response = issue_request(request)
-      JSON.parse(response.body, symbolize_names: true)[:lessons]
+      resp = nil
+      api_client.with_ssl_fallback do |client|
+        resp = client.get('/lessons.json', :submittable => 1)
+      end
+      resp.body['lessons']
     end
 
     def get_lesson(slug)
-      request = Net::HTTP::Get.new(lesson_url(slug))
-      request["Authorization"] = auth_header
-
-      response = issue_request(request)
-
-      body = JSON.parse(response.body, symbolize_names: true)
-      body[:lesson]
+      resp = nil
+      api_client.with_ssl_fallback do |client|
+        resp = client.get(lesson_url(slug), :submittable => 1)
+      end
+      resp.body['lesson']
     end
 
     def download_file(url)
-      uri = URI(url)
+      response = nil
       dest = random_filename
 
-      request = Net::HTTP::Get.new(uri.path)
-      response = issue_request(request, url)
-      if response.code == "200"
+      download_client(url).with_ssl_fallback do |client|
+        response = client.get(URI(url).path)
+      end
+      if response.status == 200
         open(dest, 'wb') do |file|
           file.write(response.body)
         end
@@ -50,66 +49,47 @@ module ET
 
     def submit_lesson(lesson)
       submission_file = lesson.archive!
-      url = submission_url(lesson.slug)
-
-      File.open(submission_file) do |f|
-        request = Net::HTTP::Post::Multipart.new(url.path,
-          "submission[archive]" => UploadIO.new(f, "application/x-tar", "archive.tar.gz"))
-        request["Authorization"] = auth_header
-
-        issue_request(request)
+      io = Faraday::UploadIO.new(submission_file, "application/x-tar")
+      resp = nil
+      api_client.with_ssl_fallback do |client|
+        resp = client.post(submission_url(lesson.slug),
+          "submission" => { "archive" => io})
       end
+      resp
     end
 
     private
-    def issue_request(request, url = nil)
-      uri = URI.parse(url || @host)
-      begin
-        Net::HTTP.start(uri.host, uri.port,
-          use_ssl: uri.scheme == "https") do |http|
-
-          http.request(request)
-        end
-      rescue OpenSSL::SSL::SSLError => e
-        if operating_system.platform_family?(:windows)
-          https = Net::HTTP.new(uri.host, uri.port)
-          https.verify_mode = OpenSSL::SSL::VERIFY_NONE
-          https.use_ssl = uri.scheme == 'https'
-          https.start do |http|
-            http.request(request)
-          end
-        else
-          raise e
-        end
-      end
-    end
-
     def lesson_url(slug)
-      URI.join(host, "lessons/#{slug}.json?submittable=1")
-    end
-
-    def lessons_url
-      URI.join(host, "lessons.json?submittable=1")
+      "/lessons/#{slug}.json"
     end
 
     def submission_url(slug)
-      URI.join(host, "lessons/#{slug}/submissions.json")
+      "/lessons/#{slug}/submissions.json"
     end
 
     def random_filename
       File.join(Dir.mktmpdir, SecureRandom.hex)
     end
 
-    def credentials
-      Base64.strict_encode64("#{username}:#{token}")
+    def api_client
+      @api_client ||= ET::FallbackConnection.new(:url => @host) do |client|
+        client.request :multipart
+
+        client.request :url_encoded
+        client.request :basic_auth, username, token
+
+        client.response :json, :content_type => /\bjson$/
+
+        client.adapter  Faraday.default_adapter
+      end
     end
 
-    def auth_header
-      "Basic #{credentials}"
-    end
-
-    def operating_system
-      @os ||= ET::OperatingSystem.new
+    def download_client(url)
+      uri = URI(url)
+      scheme_and_host = [uri.scheme, uri.host].join('://')
+      ET::FallbackConnection.new(:url => scheme_and_host) do |client|
+        client.adapter  Faraday.default_adapter
+      end
     end
   end
 end

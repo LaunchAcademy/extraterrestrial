@@ -40,7 +40,7 @@ module ET
       desc "List available lessons."
       command :list do |c|
         c.action do |_global_options, _options, _cmdargs|
-          Formatter.print_table(api.list_lessons, :slug, :title, :type)
+          Formatter.print_table(api.list_lessons, 'slug', 'title', 'type')
         end
       end
 
@@ -49,7 +49,7 @@ module ET
         c.action do |_global_options, _options, cmdargs|
           cmdargs.each do |slug|
             lesson = api.get_lesson(slug)
-            archive = api.download_file(lesson[:archive_url])
+            archive = api.download_file(lesson['archive_url'])
             archive_manager = ET::ArchiveManager.new(archive, cwd)
             archive_manager.unpack
 
