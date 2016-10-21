@@ -17,16 +17,16 @@ module ET
         File.open(filepath, "wb") do |file|
           Zlib::GzipWriter.wrap(file) do |gz|
             Gem::Package::TarWriter.new(gz) do |tar|
-              Dir.glob(File.join(dir, "**/*")).each do |file|
-                relative_path = file.gsub(dir + "/", "")
-                if !ignored_files.include?(relative_path)
-                  if FileTest.directory?(file)
-                    tar.mkdir(relative_path, 0755)
-                  else
-                    file_contents = File.read(file)
-                    tar.add_file_simple("./" + relative_path, 0555, file_contents.bytesize) do |io|
-                      io.write(file_contents)
-                    end
+              ET::SubmissionFileList.new(dir).each do |file|
+                relative_path = file
+                absolute_path = File.join(dir, file)
+
+                if FileTest.directory?(absolute_path)
+                  tar.mkdir(relative_path, 0755)
+                else
+                  file_contents = File.read(absolute_path)
+                  tar.add_file_simple("./" + relative_path, 0555, file_contents.bytesize) do |io|
+                    io.write(file_contents)
                   end
                 end
               end
@@ -49,10 +49,6 @@ module ET
 
     def exists?
       !dir.nil?
-    end
-
-    def ignored_files
-      (config["ignore"] || []) + [".lesson.yml"]
     end
 
     protected

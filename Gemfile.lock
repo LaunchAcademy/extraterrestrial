@@ -6,6 +6,7 @@ PATH
       faraday_middleware (~> 0.10)
       gli (= 2.11.0)
       multipart-post (~> 2.0)
+      rake (~> 10)
       rspec (~> 3.0)
       rspec-mocks (~> 3.0)
 
@@ -47,7 +48,6 @@ PLATFORMS
 DEPENDENCIES
   et!
   pry (~> 0)
-  rake (~> 10)
 
 BUNDLED WITH
    1.13.5
