@@ -10,26 +10,24 @@ describe ET::API do
 
   describe "lessons" do
     it "queries for a list of lessons" do
-      request = {}
-      response = double
-      http = double
-      expect(Net::HTTP::Get).to receive(:new).
-        with(lessons_uri).
-        and_return(request)
-      expect(Net::HTTP).to receive(:start).with(
-        lessons_uri.host,
-        lessons_uri.port,
-        use_ssl: lessons_uri.scheme == "https").
-        and_yield(http)
-      expect(http).to receive(:request).and_return(response)
-      expect(response).to receive(:body).and_return(lessons_response)
+      client = Faraday.new do |builder|
+        builder.response :json
+
+        builder.adapter :test do |stubs|
+          stubs.get("/lessons.json") do
+            [200, {}, lessons_response]
+          end
+        end
+      end
+
+      allow_any_instance_of(ET::FallbackConnection).to receive(:with_ssl_fallback).and_yield(client)
 
       results = api.list_lessons
 
       expect(results.count).to eq(3)
-      expect(results[0][:title]).to eq("Max Number")
-      expect(results[0][:slug]).to eq("max-number")
-      expect(results[0][:type]).to eq("exercise")
+      expect(results[0]['title']).to eq("Max Number")
+      expect(results[0]['slug']).to eq("max-number")
+      expect(results[0]['type']).to eq("exercise")
     end
 
     let(:lesson_response) do
@@ -37,99 +35,67 @@ describe ET::API do
     end
 
     it "queries for a single lesson" do
-      request = {}
-      response = double
-      http = double
+      client = Faraday.new do |builder|
+        builder.response :json
 
-      lesson_uri = URI("http://localhost:3000/lessons/rock-paper-scissors.json?submittable=1")
-      expect(Net::HTTP::Get).to receive(:new).
-        with(lesson_uri).
-        and_return(request)
-      expect(Net::HTTP).to receive(:start).with(
-        lesson_uri.host,
-        lesson_uri.port,
-        use_ssl: lesson_uri.scheme == "https").
-        and_yield(http)
-      expect(http).to receive(:request).and_return(response)
-      expect(response).to receive(:body).and_return(lesson_response)
+        builder.adapter :test do |stubs|
+          stubs.get("/lessons/rock-paper-scissors.json") do
+            [200, {}, lesson_response]
+          end
+        end
+      end
+
+      allow_any_instance_of(ET::FallbackConnection).
+        to receive(:with_ssl_fallback).and_yield(client)
 
       result = api.get_lesson("rock-paper-scissors")
 
-      expect(result[:title]).to eq("Rock, Paper, Scissors")
-      expect(result[:archive_url]).to eq("http://example.com/rock-paper-scissors.tar.gz")
+      expect(result['title']).to eq("Rock, Paper, Scissors")
+      expect(result['archive_url']).to   eq('http://example.com/rock-paper-scissors.tar.gz')
     end
-  end
-
-  context 'ssl verification' do
-    it 're-raises an exception for non Windows machines' do
-      dbl_os = double
-      allow(dbl_os).to receive(:platform_family?).with(:windows).and_return(false)
-      expect(ET::OperatingSystem).to receive(:new).and_return(dbl_os)
-
-      expect(Net::HTTP).to receive(:start).and_raise(OpenSSL::SSL::SSLError)
-      expect{ api.list_lessons }.to raise_error(OpenSSL::SSL::SSLError)
-    end
-
-    it 'swallows the exception for windows machines and reissues' do
-      http = double
-      allow(http).to receive(:start).and_yield(http)
-      allow(http).to receive(:verify_mode=)
-      allow(http).to receive(:use_ssl=)
-      response = double
-
-      allow(http).to receive(:request).and_return(response)
-      allow(response).to receive(:body).and_return(lessons_response)
-
-      allow(Net::HTTP).to receive(:start).
-        with(
-          lessons_uri.host,
-          lessons_uri.port,
-          use_ssl: lessons_uri.scheme == 'https').
-            and_raise(OpenSSL::SSL::SSLError)
-
-      expect(Net::HTTP).to receive(:new).with(
-          lessons_uri.host,
-          lessons_uri.port).
-          and_return(http)
-
-      dbl_os = double
-      allow(dbl_os).to receive(:platform_family?).and_return(:windows)
-      allow(ET::OperatingSystem).to receive(:new).and_return(dbl_os)
-
-      api.list_lessons
-    end
-  end
+  end  
 
   context 'downloading files' do
     it 'returns nil when a 404 is encountered' do
+      filename = 'somefile.tar.gz'
+      client = Faraday.new do |builder|
+        builder.response :json
 
-      http = double
-      response = double
-      allow(response).to receive(:code).and_return("404")
-      allow(http).to receive(:request).and_return(response)
-      allow(Net::HTTP).to receive(:start).and_yield(http)
+        builder.adapter :test do |stubs|
+          stubs.get("/#{filename}") do
+            [404, {}, '']
+          end
+        end
+      end
 
-      expect(api.download_file("http://example.com/somefile.tar.gz")).to be_nil
+      allow_any_instance_of(ET::FallbackConnection).
+        to receive(:with_ssl_fallback).and_yield(client)
+
+      expect(api.download_file("http://example.com/#{filename}")).to be_nil
     end
+
     it 'returns a local file when a challenge is successfully downloaded' do
       path = '/tmp/et'
-      filename = 'fab'
+      filename = 'some-challenge.tar.gz'
 
       FileUtils.rm_rf(File.join(path, filename))
       FileUtils.mkdir_p(path)
 
+      filename = 'somefile.tar.gz'
+      client = Faraday.new do |builder|
+        builder.adapter :test do |stubs|
+          stubs.get("/#{filename}") do
+            [200, {}, '']
+          end
+        end
+      end
+
+      allow_any_instance_of(ET::FallbackConnection).
+        to receive(:with_ssl_fallback).and_yield(client)
       allow(Dir).to receive(:mktmpdir).and_return(path)
       allow(SecureRandom).to receive(:hex).and_return(filename)
 
-      http = double
-      response = double
-      file_contents = File.read(File.join(File.dirname(__FILE__), "../data/some-challenge.tar.gz"))
-      allow(response).to receive(:body).and_return(file_contents)
-      allow(response).to receive(:code).and_return("200")
-      allow(http).to receive(:request).and_return(response)
-      allow(Net::HTTP).to receive(:start).and_yield(http)
-
-      url = 'http://example.com/some-challenge.tar.gz'
+      url = "http://example.com/#{filename}"
 
       expect(api.download_file(url)).to eql(File.join(path, filename))
     end

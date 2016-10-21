@@ -25,4 +25,6 @@ DESC
   s.add_runtime_dependency("rspec-mocks", "~> 3.0")
   s.add_runtime_dependency("multipart-post", "~> 2.0")
   s.add_runtime_dependency("gli", "2.11.0")
+  s.add_runtime_dependency("faraday", "~> 0.9")
+  s.add_runtime_dependency("faraday_middleware", "~> 0.10")
 end

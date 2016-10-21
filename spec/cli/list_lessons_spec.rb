@@ -2,7 +2,7 @@ describe "list lessons" do
   let(:sample_lessons_file) { project_root.join("spec/data/lessons.json") }
 
   let(:sample_lessons) do
-    JSON.parse(File.read(sample_lessons_file), symbolize_names: true)[:lessons]
+    JSON.parse(File.read(sample_lessons_file))['lessons']
   end
 
   it "prints the titles and slug" do

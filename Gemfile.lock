@@ -2,6 +2,8 @@ PATH
   remote: .
   specs:
     et (0.5.9)
+      faraday (~> 0.9)
+      faraday_middleware (~> 0.10)
       gli (= 2.11.0)
       multipart-post (~> 2.0)
       rake (~> 10)
@@ -13,6 +15,10 @@ GEM
   specs:
     coderay (1.1.1)
     diff-lcs (1.2.5)
+    faraday (0.9.2)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.10.0)
+      faraday (>= 0.7.4, < 0.10)
     gli (2.11.0)
     method_source (0.8.2)
     multipart-post (2.0.0)
