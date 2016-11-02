@@ -12,7 +12,7 @@ describe ET::FallbackConnection do
       allow_any_instance_of(Faraday::Connection).
         to receive(:get).and_raise(Faraday::SSLError.new(OpenSSL::SSL::SSLError))
 
-      expect{ cnn.with_ssl_fallback{|client| client.get('/') }}.
+      expect{ cnn.open {|client| client.get('/') }}.
         to raise_error(Faraday::SSLError)
     end
 
@@ -33,7 +33,7 @@ describe ET::FallbackConnection do
         end
       end
 
-      cnn.with_ssl_fallback do |client|
+      cnn.open do |client|
         client.get('/')
       end
       expect(called_twice).to be(true)

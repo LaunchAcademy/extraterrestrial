@@ -20,7 +20,7 @@ describe ET::API do
         end
       end
 
-      allow_any_instance_of(ET::FallbackConnection).to receive(:with_ssl_fallback).and_yield(client)
+      allow_any_instance_of(ET::FallbackConnection).to receive(:open).and_yield(client)
 
       results = api.list_lessons
 
@@ -46,14 +46,14 @@ describe ET::API do
       end
 
       allow_any_instance_of(ET::FallbackConnection).
-        to receive(:with_ssl_fallback).and_yield(client)
+        to receive(:open).and_yield(client)
 
       result = api.get_lesson("rock-paper-scissors")
 
       expect(result['title']).to eq("Rock, Paper, Scissors")
       expect(result['archive_url']).to   eq('http://example.com/rock-paper-scissors.tar.gz')
     end
-  end  
+  end
 
   context 'downloading files' do
     it 'returns nil when a 404 is encountered' do
@@ -69,7 +69,7 @@ describe ET::API do
       end
 
       allow_any_instance_of(ET::FallbackConnection).
-        to receive(:with_ssl_fallback).and_yield(client)
+        to receive(:open).and_yield(client)
 
       expect(api.download_file("http://example.com/#{filename}")).to be_nil
     end
@@ -91,7 +91,7 @@ describe ET::API do
       end
 
       allow_any_instance_of(ET::FallbackConnection).
-        to receive(:with_ssl_fallback).and_yield(client)
+        to receive(:open).and_yield(client)
       allow(Dir).to receive(:mktmpdir).and_return(path)
       allow(SecureRandom).to receive(:hex).and_return(filename)
 

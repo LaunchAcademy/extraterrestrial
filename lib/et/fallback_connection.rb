@@ -9,7 +9,7 @@ module ET
       @fallback_connection = Faraday.new(opts.merge(:ssl => {:verify => false}))
     end
 
-    def with_ssl_fallback(&block)
+    def open(&block)
       begin
         block.call(@connection)
       rescue Faraday::SSLError => e

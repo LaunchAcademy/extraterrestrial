@@ -16,7 +16,7 @@ module ET
 
     def list_lessons
       response = nil
-      api_client.with_ssl_fallback do |client|
+      api_client.open do |client|
         response = client.get('/lessons.json', :submittable => 1)
       end
       response.body['lessons']
@@ -24,7 +24,7 @@ module ET
 
     def get_lesson(slug)
       resp = nil
-      api_client.with_ssl_fallback do |client|
+      api_client.open do |client|
         resp = client.get(lesson_url(slug), :submittable => 1)
       end
       resp.body['lesson']
@@ -34,7 +34,7 @@ module ET
       response = nil
       dest = random_filename
 
-      download_client(url).with_ssl_fallback do |client|
+      download_client(url).open do |client|
         response = client.get(URI(url).path)
       end
       if response.status == 200
@@ -51,7 +51,7 @@ module ET
       submission_file = lesson.archive!
       io = Faraday::UploadIO.new(submission_file, "application/x-tar")
       resp = nil
-      api_client.with_ssl_fallback do |client|
+      api_client.open do |client|
         resp = client.post(submission_url(lesson.slug),
           "submission" => { "archive" => io})
       end
