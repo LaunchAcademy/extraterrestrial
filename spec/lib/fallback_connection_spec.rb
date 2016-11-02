@@ -10,10 +10,10 @@ describe ET::FallbackConnection do
       expect(ET::OperatingSystem).to receive(:new).and_return(dbl_os)
 
       allow_any_instance_of(Faraday::Connection).
-        to receive(:get).and_raise(OpenSSL::SSL::SSLError)
-        
+        to receive(:get).and_raise(Faraday::SSLError.new(OpenSSL::SSL::SSLError))
+
       expect{ cnn.with_ssl_fallback{|client| client.get('/') }}.
-        to raise_error(OpenSSL::SSL::SSLError)
+        to raise_error(Faraday::SSLError)
     end
 
     it 'swallows the exception for windows machines and reissues' do
@@ -25,7 +25,7 @@ describe ET::FallbackConnection do
       allow_any_instance_of(Faraday::Connection).to receive(:get) do |*args|
         if args[0].ssl.verify != false
           #simulate a windows SSL verification failed
-          raise OpenSSL::SSL::SSLError
+          raise Faraday::SSLError.new(OpenSSL::SSL::SSLError.new)
         elsif args[0].ssl.verify == false
           #flip the switch that the request was reissued without SSL verification
           called_twice = true

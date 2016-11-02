@@ -12,7 +12,7 @@ module ET
     def with_ssl_fallback(&block)
       begin
         block.call(@connection)
-      rescue OpenSSL::SSL::SSLError => e
+      rescue Faraday::SSLError => e
         if operating_system.platform_family?(:windows)
           block.call(@fallback_connection)
         else
