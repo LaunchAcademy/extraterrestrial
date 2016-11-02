@@ -6,7 +6,7 @@ module ET
     def initialize(opts = {}, &block)
       @connection = Faraday.new(opts, &block)
 
-      @fallback_connection = Faraday.new(opts.merge(:ssl => {:verify => false}))
+      @fallback_connection = Faraday.new(opts.merge(:ssl => {:verify => false}), &block)
     end
 
     def open(&block)
