@@ -15,11 +15,11 @@ module ET
     end
 
     def list_lessons
-      resp = nil
+      response = nil
       api_client.with_ssl_fallback do |client|
-        resp = client.get('/lessons.json', :submittable => 1)
+        response = client.get('/lessons.json', :submittable => 1)
       end
-      resp.body['lessons']
+      response.body['lessons']
     end
 
     def get_lesson(slug)
