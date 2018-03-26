@@ -67,9 +67,8 @@ module ET
      desc "Download every available lesson to your working area."
      command :getall do |c|
        c.action do |_global_options, _options, _cmdargs|
-         binding.pry
        api.list_lessons.each do |slug|
-           lesson = api.get_lesson(slug.title)
+           lesson = api.get_lesson(slug['slug'])
             archive = api.download_file(lesson['archive_url'])
             archive_manager = ET::ArchiveManager.new(archive, cwd)
             archive_manager.unpack
