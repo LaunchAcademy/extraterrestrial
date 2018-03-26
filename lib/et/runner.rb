@@ -1,5 +1,6 @@
 require "gli"
 require "yaml"
+require 'pry'
 
 module ET
   class Runner
@@ -49,6 +50,26 @@ module ET
         c.action do |_global_options, _options, cmdargs|
           cmdargs.each do |slug|
             lesson = api.get_lesson(slug)
+            archive = api.download_file(lesson['archive_url'])
+            archive_manager = ET::ArchiveManager.new(archive, cwd)
+            archive_manager.unpack
+
+            if !archive_manager.unpacked_files.empty?
+              archive_manager.delete_archive
+              puts "'#{slug}' extracted to '#{archive_manager.destination}'"
+            else
+              raise StandardError.new("Failed to extract the archive.")
+            end
+          end
+        end
+      end
+
+     desc "Download every available lesson to your working area."
+     command :getall do |c|
+       c.action do |_global_options, _options, _cmdargs|
+         binding.pry
+       api.list_lessons.each do |slug|
+           lesson = api.get_lesson(slug.title)
             archive = api.download_file(lesson['archive_url'])
             archive_manager = ET::ArchiveManager.new(archive, cwd)
             archive_manager.unpack
