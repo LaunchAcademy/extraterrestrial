@@ -1,6 +1,5 @@
 require "gli"
 require "yaml"
-require 'pry'
 
 module ET
   class Runner
