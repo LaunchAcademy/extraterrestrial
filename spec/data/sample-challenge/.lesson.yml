@@ -2,5 +2,3 @@
 title: "Sample Challenge"
 type: "challenge"
 description: "Some description."
-ignore:
-- "sample-challenge.md"

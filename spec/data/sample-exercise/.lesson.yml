@@ -2,5 +2,3 @@
 title: "Sample Exercise"
 type: "exercise"
 description: "Some description here."
-ignore:
-- "sample-exercise.md"
