@@ -15,7 +15,6 @@ DESC
 
   s.files = `git ls-files`.split("\n")
   s.require_paths << "lib"
-  s.has_rdoc = false
   s.bindir = "bin"
   s.executables << "et"
   s.license = "MIT"
