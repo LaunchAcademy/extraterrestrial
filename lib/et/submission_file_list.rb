@@ -14,7 +14,7 @@ module ET
 
     def files
       unless @files
-        @files = Rake::FileList[File.join(@path, "**/*"), File.join(@path, ".gitignore") ]
+        @files = Rake::FileList[File.join(@path, "**/*"), File.join(@path, ".gitignore")]
         ignore_globs.each do |glob|
           filename = File.join(@path, glob)
 
