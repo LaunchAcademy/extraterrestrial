@@ -9,8 +9,8 @@ describe ET::SubmissionFileList do
     expect(file_list).to include('problem.rb')
   end
 
-  it 'includes .gitignore' do
-    expect(file_list).to include('.gitignore')
+  it 'includes .etignore' do
+    expect(file_list).to include('.etignore')
   end
 
   it 'ignores a standard file' do
@@ -25,7 +25,7 @@ describe ET::SubmissionFileList do
     expect(file_list).to_not include('node_modules/boo/somefile.js')
   end
 
-  it 'ignores a file included in .gitignore' do
+  it 'ignores a file included in .etignore' do
     expect(file_list).to_not include('rando_folder/rando_file.js')
   end
 end

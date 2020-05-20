@@ -14,7 +14,7 @@ module ET
 
     def files
       unless @files
-        @files = Rake::FileList[File.join(@path, "**/*"), File.join(@path, ".gitignore")]
+        @files = Rake::FileList[File.join(@path, "**/*"), File.join(@path, ".etignore")]
         ignore_globs.each do |glob|
           filename = File.join(@path, glob)
 
@@ -38,20 +38,20 @@ module ET
 
     protected
     def ignore_globs
-      gitignore_globs + [] + DEFAULT_IGNORE_GLOBS
+      etignore_globs + [] + DEFAULT_IGNORE_GLOBS
     end
 
-    def gitignore_globs
-      unless @gitignore_globs
-        gitignore = File.join(@path, '.gitignore')
-        if FileTest.exists?(gitignore)
-          @gitignore_globs = File.read(gitignore).split(/\n/)
-          @gitignore_globs.delete_if { | string | string.start_with?("#") || string.empty?}
+    def etignore_globs
+      unless @etignore_globs
+        etignore = File.join(@path, '.etignore')
+        if FileTest.exists?(etignore)
+          @etignore_globs = File.read(etignore).split(/\n/)
+          @etignore_globs.delete_if { | string | string.start_with?("#") || string.empty?}
         else
-          @gitignore_globs = []
+          @etignore_globs = []
         end
       end
-      @gitignore_globs
+      @etignore_globs
     end
   end
 end
