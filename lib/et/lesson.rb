@@ -53,10 +53,6 @@ module ET
 
     protected
 
-    def config
-      @config ||= YAML.load_file(File.join(dir, ".lesson.yml"))
-    end
-
     def random_archive_path
       File.join(Dir.mktmpdir, "#{SecureRandom.hex}.tar.gz")
     end
