@@ -58,9 +58,9 @@ module ET
     end
 
     def find_lesson_dir(current_dir)
-      path = File.join(current_dir, ".etignore")
+      parent_directory = File.dirname(current_dir)
 
-      if File.exists?(path)
+      if Config.new(parent_directory).exists?
         current_dir
       elsif current_dir == "." || Pathname.new(current_dir).root?
         nil
