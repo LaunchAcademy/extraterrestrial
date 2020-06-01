@@ -4,7 +4,7 @@ module ET
   class SubmissionFileList
     include Enumerable
     DEFAULT_IGNORE_GLOBS = [
-      '.lesson.yml',
+      '.etignore',
       'node_modules/'
     ]
 

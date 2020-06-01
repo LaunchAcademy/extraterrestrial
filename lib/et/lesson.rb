@@ -62,7 +62,7 @@ module ET
     end
 
     def find_lesson_dir(current_dir)
-      path = File.join(current_dir, ".lesson.yml")
+      path = File.join(current_dir, ".etignore")
 
       if File.exists?(path)
         current_dir
