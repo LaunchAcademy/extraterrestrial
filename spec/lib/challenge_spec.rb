@@ -66,7 +66,7 @@ describe ET::Challenge do
 
           expect(files).to include("./problem.rb")
           expect(files).to_not include("./sample-challenge.md")
-          expect(files).to_not include("./.lesson.yml")
+          expect(files).to include("./.etignore")
         end
       ensure
         if archive_path && File.exist?(archive_path)
