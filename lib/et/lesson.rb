@@ -53,18 +53,14 @@ module ET
 
     protected
 
-    def config
-      @config ||= YAML.load_file(File.join(dir, ".lesson.yml"))
-    end
-
     def random_archive_path
       File.join(Dir.mktmpdir, "#{SecureRandom.hex}.tar.gz")
     end
 
     def find_lesson_dir(current_dir)
-      path = File.join(current_dir, ".lesson.yml")
+      parent_directory = File.dirname(current_dir)
 
-      if File.exists?(path)
+      if Config.new(parent_directory).exists?
         current_dir
       elsif current_dir == "." || Pathname.new(current_dir).root?
         nil

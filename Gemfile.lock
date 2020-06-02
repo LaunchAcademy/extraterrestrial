@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    et (0.6.2)
+    et (0.7.2)
       faraday (~> 0.9)
       faraday_middleware (~> 0.10)
       gli (= 2.11.0)
