@@ -4,8 +4,9 @@ module ET
   class SubmissionFileList
     include Enumerable
     DEFAULT_IGNORE_GLOBS = [
-      '.lesson.yml',
-      'node_modules/'
+      '.etignore',
+      'node_modules/',
+      'coverage/'
     ]
 
     def initialize(path)

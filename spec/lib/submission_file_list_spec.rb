@@ -9,8 +9,8 @@ describe ET::SubmissionFileList do
     expect(file_list).to include('problem.rb')
   end
 
-  it 'includes .etignore' do
-    expect(file_list).to include('.etignore')
+  it 'does not include .etignore' do
+    expect(file_list).to_not include('.etignore')
   end
 
   it 'ignores a standard file' do

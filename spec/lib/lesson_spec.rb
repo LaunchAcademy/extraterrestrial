@@ -3,7 +3,7 @@ require "spec_helper"
 describe ET::Lesson do
   context "archive! method" do
     it "creates a tar.gz file" do
-      path = '/tmp/et'
+      path = Dir.mktmpdir
       filename = 'fab'
 
       FileUtils.rm_rf(File.join(path, filename))
