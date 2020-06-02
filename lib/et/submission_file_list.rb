@@ -5,7 +5,8 @@ module ET
     include Enumerable
     DEFAULT_IGNORE_GLOBS = [
       '.etignore',
-      'node_modules/'
+      'node_modules/',
+      'coverage/'
     ]
 
     def initialize(path)
